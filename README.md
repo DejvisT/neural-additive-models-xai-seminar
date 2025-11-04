@@ -20,12 +20,24 @@ cd google-research/neural_additive_models
 
 Open the file `setup.py` inside `neural_additive_models` folder and find the line:
 ```bash
-install_requires = ['tensorflow>=1.15', 'numpy>=1.15.2', 'sklearn']
+install_requires = [
+    'tensorflow>=1.15',
+    'numpy>=1.15.2',
+    'sklearn',
+    'pandas>=0.24',
+    'absl-py',
+]
 ```
 
 Change it to:
 ```bash
-install_requires = ['tensorflow>=1.15', 'numpy>=1.15.2', 'scikit-learn']
+install_requires = [
+    'tensorflow>=1.15',
+    'numpy>=1.15.2',
+    'scikit-learn',
+    'pandas>=0.24',
+    'absl-py',
+]
 ```
 
 ### 4. Install the package
