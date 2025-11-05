@@ -26,7 +26,7 @@ long_description = (here / 'README.md').read_text(encoding='utf-8')
 install_requires = [
     'tensorflow>=1.15',
     'numpy>=1.15.2',
-    'sklearn',
+    'scikit-learn',
     'pandas>=0.24',
     'absl-py',
 ]
