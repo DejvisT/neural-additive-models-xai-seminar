@@ -34,6 +34,8 @@ from sklearn.preprocessing import FunctionTransformer
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import OneHotEncoder
 import tensorflow.compat.v1 as tf
+from sklearn.datasets import fetch_california_housing
+
 gfile = tf.gfile
 
 DATA_PATH = 'gs://nam_datasets/data'
@@ -293,39 +295,12 @@ def load_california_housing_data(
     input features `X` as a pandas.Dataframe and the regression targets `y` as
     np.ndarray.
   """
-  feature_names = [
-      'MedInc', 'HouseAge', 'AveRooms', 'AveBedrms', 'Population', 'AveOccup',
-      'Latitude', 'Longitude'
-  ]
-
-  archive_path = osp.join(DATA_PATH, 'cal_housing.tgz')
-  with gfile.Open(archive_path, 'rb') as fileobj:
-    with tarfile.open(fileobj=fileobj, mode='r:gz') as f:
-      cal_housing = np.loadtxt(
-          f.extractfile('CaliforniaHousing/cal_housing.data'), delimiter=',')
-      # Columns are not in the same order compared to the previous
-      # URL resource on lib.stat.cmu.edu
-      columns_index = [8, 7, 2, 3, 4, 5, 6, 1, 0]
-      cal_housing = cal_housing[:, columns_index]
-
-  target, data = cal_housing[:, 0], cal_housing[:, 1:]
-
-  # avg rooms = total rooms / households
-  data[:, 2] /= data[:, 5]
-
-  # avg bed rooms = total bed rooms / households
-  data[:, 3] /= data[:, 5]
-
-  # avg occupancy = population / households
-  data[:, 5] = data[:, 4] / data[:, 5]
-
-  # target in units of 100,000
-  target = target / 100000.0
-
+  housing = fetch_california_housing()
+  feature_names = list(housing.feature_names)
   return {
-      'problem': 'regression',
-      'X': pd.DataFrame(data, columns=feature_names),
-      'y': target,
+      'problem': 'classification',
+      'X': pd.DataFrame(housing.data, columns=feature_names),
+      'y': housing.target,
   }
 
 
@@ -375,7 +350,7 @@ def transform_data(df):
       new_column_names.append(col_name)
   cat_ohe_step = (
       'ohe',
-      OneHotEncoder(sparse_output=False, handle_unknown='ignore'),
+      OneHotEncoder(sparse=False, handle_unknown='ignore'),
   )
 
   cat_pipe = Pipeline([cat_ohe_step])
