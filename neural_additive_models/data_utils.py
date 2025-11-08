@@ -35,7 +35,8 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import OneHotEncoder
 import tensorflow.compat.v1 as tf
 from sklearn.datasets import fetch_california_housing
-
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.model_selection import train_test_split
 gfile = tf.gfile
 
 DATA_PATH = 'gs://nam_datasets/data'
@@ -60,6 +61,100 @@ def read_dataset(dataset_name,
     df = pd.read_csv(
         f, header=header, names=names, delim_whitespace=delim_whitespace)
   return df
+
+
+def load_synthetic_data():
+  def metric_wrapper(metric, scaler):
+    def wrapper(label, pred):
+        return metric(label, pred, scaler=scaler)
+    return wrapper
+
+
+  def rmse(label, pred, scaler):
+      pred = scaler.inverse_transform(pred.reshape([-1, 1]))
+      label = scaler.inverse_transform(label.reshape([-1, 1]))
+      return np.sqrt(np.mean((pred - label)**2))
+
+
+  def data_generator1(datanum, dist="uniform", random_state=0):
+      """Generates a synthetic regression dataset used for NAM benchmarking."""
+      nfeatures = 100
+      np.random.seed(random_state)
+      x = np.random.uniform(0, 1, [datanum, nfeatures])
+      x1, x2, x3, x4, x5, x6 = [x[:, [i]] for i in range(6)]
+
+      def cliff(x1, x2):
+          x1 = (2 * x1 - 1) * 20
+          x2 = (2 * x2 - 1) * 7.5 - 2.5
+          term1 = -0.5 * x1 ** 2 / 100
+          term2 = -0.5 * (x2 + 0.03 * x1 ** 2 - 3) ** 2
+          y = 10 * np.exp(term1 + term2)
+          return y
+
+      y = (8 * (x1 - 0.5) ** 2
+          + 0.1 * np.exp(-8 * x2 + 4)
+          + 3 * np.sin(2 * np.pi * x3 * x4)
+          + cliff(x5, x6)).reshape([-1, 1]) + np.random.normal(0, 1, [datanum, 1])
+
+      task_type = "Regression"
+      meta_info = {"X" + str(i + 1): {'type': 'continuous'} for i in range(nfeatures)}
+      meta_info.update({'Y': {'type': 'target'}})
+      for i, (key, item) in enumerate(meta_info.items()):
+          if item['type'] == 'target':
+              sy = MinMaxScaler((0, 1))
+              y = sy.fit_transform(y)
+              meta_info[key]['scaler'] = sy
+          else:
+              sx = MinMaxScaler((0, 1))
+              sx.fit([[0], [1]])
+              x[:, [i]] = sx.transform(x[:, [i]])
+              meta_info[key]['scaler'] = sx
+
+      train_x, test_x, train_y, test_y = train_test_split(x, y, test_size=0.2, random_state=random_state)
+      return train_x, test_x, train_y, test_y, task_type, meta_info, metric_wrapper(rmse, sy)
+    
+  """Wraps the synthetic data generator for use in NAM training."""
+  train_x, test_x, train_y, test_y, task_type, meta_info, get_metric = data_generator1(
+      datanum=10000, random_state=0)
+
+  # Combine train and test for NAM's internal folding/splitting
+  X = np.vstack([train_x, test_x])
+  y = np.vstack([train_y, test_y]).reshape(-1)
+
+  return {
+      'problem': 'regression',
+      'X': pd.DataFrame(X, columns=[f"X{i+1}" for i in range(X.shape[1])]),
+      'y': y
+  }
+
+
+def load_correlated_data(n=20000, rho=0.95, seed=0):
+    rng = np.random.default_rng(seed)
+
+    # Correlated first 3 features
+    d = 3
+    Sigma = rho ** np.abs(np.subtract.outer(np.arange(d), np.arange(d)))
+    X_corr = rng.multivariate_normal(np.zeros(d), Sigma, size=n)
+
+    # Remaining 7 independent features
+    X_rest = rng.normal(size=(n, 7))
+
+    # Combine full feature matrix
+    X = np.concatenate([X_corr, X_rest], axis=1)
+    feature_names = [f"X{i+1}" for i in range(X.shape[1])]
+
+    # Nonlinear target function
+    x1, x4 = X[:, 0], X[:, 3]
+    f1 = 3 * np.sin(2 * np.pi * x1)
+    f4 = 2 * (x4 ** 2 - 0.5)
+    y = f1 + f4 + rng.normal(0, 0.5, size=n)
+
+    # Return in same format as NAM-compatible generator
+    return {
+        'problem': 'regression',
+        'X': pd.DataFrame(X, columns=feature_names),
+        'y': y.reshape(-1),
+    }
 
 
 def load_breast_data():
@@ -401,6 +496,10 @@ def load_dataset(dataset_name):
     dataset = load_fico_score_data()
   elif dataset_name == 'Housing':
     dataset = load_california_housing_data()
+  elif dataset_name == 'Synthetic':
+    dataset = load_synthetic_data()
+  elif dataset_name == 'Correlated':
+    dataset = load_correlated_data()
   else:
     raise ValueError('{} not found!'.format(dataset_name))
 
