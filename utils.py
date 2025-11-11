@@ -127,26 +127,46 @@ def generate_predictions(gen, nn_model, sess):
     return np.array(y_pred)
 
 
-def get_test_predictions(nn_model, x_test, sess, batch_size=256):
-    batch_size = min(batch_size, x_test.shape[0])
-    generator = partition(x_test, batch_size)
-    return generate_predictions(generator, nn_model, sess)
+def get_test_predictions(nn_model, x_test, sess, batch_size=1024):
+    num_samples = x_test.shape[0]
+    preds = []
+    for start in range(0, num_samples, batch_size):
+        end = start + batch_size
+        batch = x_test[start:end]
+        preds.append(sess.run(nn_model(batch, training=False)))
+    return np.concatenate(preds, axis=0)
 
 
-def get_feature_predictions(nn_model, dataset_name, sess):
-    feature_predictions = []
+def get_feature_predictions(nn_model, dataset_name, sess, chunk_size=50000):
+    """Compute feature predictions for all unique values safely in chunks."""
     unique_features = compute_features(dataset_name)
-    for c, i in enumerate(unique_features):
-        f_preds = sess.run(nn_model.feature_nns[c](i, training=nn_model._false))
-        feature_predictions.append(f_preds)
+    feature_predictions = []
+
+    for c, vals in enumerate(unique_features):
+        preds_all = []
+        n = vals.shape[0]
+        for start in range(0, n, chunk_size):
+            print(start)
+            end = min(start + chunk_size, n)
+            batch = vals[start:end]
+            preds = sess.run(nn_model.feature_nns[c](batch, training=nn_model._false))
+            preds_all.append(preds)
+        feature_predictions.append(np.concatenate(preds_all, axis=0))
     return feature_predictions
 
 
 def compute_features(dataset_name):
-  x_data, _, _ = data_utils.load_dataset(dataset_name)
-  single_features = np.split(x_data, x_data.shape[1], axis=1)
-  unique_features = [np.unique(f, axis=0) for f in single_features]
-  return unique_features
+    x_data, _, _ = data_utils.load_dataset(dataset_name)
+    n_features = x_data.shape[1]
+    unique_features = []
+
+    for i in range(n_features):
+        col = np.ascontiguousarray(x_data[:, i])
+        # Sort first, then unique -> less memory than np.unique on unsorted
+        col.sort()
+        uniq = np.unique(col)
+        unique_features.append(uniq.reshape(-1, 1))
+    return unique_features
 
 
 def prepare_feature_arrays(data_x, column_names, col_min_max, inverse_min_max_scaler):
@@ -180,7 +200,8 @@ def get_dataset_config(dataset_name, column_names):
         },
         'Fico': {},
         'Housing': {},
-        'Correlated': {}
+        'Correlated': {},
+        'Credit':{}
     }
 
     COL_NAMES = {
