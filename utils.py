@@ -146,7 +146,6 @@ def get_feature_predictions(nn_model, dataset_name, sess, chunk_size=50000):
         preds_all = []
         n = vals.shape[0]
         for start in range(0, n, chunk_size):
-            print(start)
             end = min(start + chunk_size, n)
             batch = vals[start:end]
             preds = sess.run(nn_model.feature_nns[c](batch, training=nn_model._false))
