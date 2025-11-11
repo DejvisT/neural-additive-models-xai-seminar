@@ -1,0 +1,1 @@
+python nam_train.py --dataset_name=Credit --training_epochs=1000 --regression=False --logdir=./credit --batch_size=1024 --learning_rate=0.0157 --dropout=0.8 --fold_num=5 --output_regularization=0.001 --l2_regularization=4.95e-6 --debug=True --activation=relu
