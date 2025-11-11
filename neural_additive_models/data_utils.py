@@ -233,7 +233,7 @@ def load_credit_data():
     A dict containing the `problem` type (i.e. classification) and the
     input features `X` as a pandas.Dataframe and the labels `y` as a pd.Series.
   """
-  df = read_dataset('creditcard.csv')
+  df = pd.read_csv('creditcard.csv')
   df = df.dropna()
   train_cols = df.columns[0:-1]
   label = df.columns[-1]
