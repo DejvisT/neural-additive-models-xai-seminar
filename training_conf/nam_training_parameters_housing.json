@@ -16,7 +16,7 @@
   "cross_val": false,
   "max_checkpoints_to_keep": 1,
   "save_checkpoint_every_n_epochs": 10,
-  "n_models": 20,
+  "n_models": 1,
   "num_splits": 20,
   "fold_num": 1,
   "activation": "relu",
