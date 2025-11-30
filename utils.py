@@ -26,6 +26,8 @@ def load_col_min_max(dataset_name):
     dataset = data_utils.load_credit_data()
   elif dataset_name == 'Correlated':
     dataset = data_utils.load_correlated_data()
+  elif dataset_name == 'Synthetic':
+    dataset = data_utils.load_synthetic_data()
   else:
     raise ValueError('{} not found!'.format(dataset_name))
 
@@ -200,7 +202,8 @@ def get_dataset_config(dataset_name, column_names):
         'Fico': {},
         'Housing': {},
         'Correlated': {},
-        'Credit':{}
+        'Credit':{},
+        'Synthetic':{}
     }
 
     COL_NAMES = {
@@ -243,10 +246,10 @@ def get_dataset_config(dataset_name, column_names):
         }
     }
 
-    if dataset_name in ['Credit', 'Mimic2', 'Correlated']:
+    if dataset_name in ['Credit', 'Mimic2', 'Correlated', 'Synthetic']:
         COL_NAMES[dataset_name] = {x: x for x in column_names}
 
-    if dataset_name in ['Housing', 'Credit', 'Correlated']:
+    if dataset_name in ['Housing', 'Credit', 'Correlated', 'Synthetic']:
         categorical_names = []
     elif dataset_name == 'Mimic2':
         categorical_names = ['AIDS','AdmissionType','GCS','Lymphoma','Temperature','MetastaticCancer','Renal']
@@ -308,99 +311,115 @@ def plot_mean_feature_importance(feature_names, mean_importances, dataset_name, 
     plt.show()
 
 
-def shade_by_density_blocks(hist_data, unique_features, single_features, 
-                            num_rows, num_cols, n_blocks=5, color=(0.9, 0.5, 0.5),
-                            categorical_names=None, feature_to_use=None, fig=None):
-
-    hist_data_pairs = sorted(hist_data.items(), key=lambda x: x[0])
-    min_y = np.min([np.min(a[1]) for a in hist_data_pairs])
-    max_y = np.max([np.max(a[1]) for a in hist_data_pairs])
-    min_y -= 0.01 * (max_y - min_y)
-    max_y += 0.01 * (max_y - min_y)
-
-    if feature_to_use:
-        hist_data_pairs = [v for v in hist_data_pairs if v[0] in feature_to_use]
-
-    # Get all axes from the figure to reuse
-    if fig is None:
-        fig = plt.gcf()
-    axes = fig.get_axes()
-
-    for i, (name, pred) in enumerate(hist_data_pairs):
-        ax = axes[i]  # ✅ reuse existing subplot, don’t create new one
-        unique_x_data = unique_features[name]
-        single_feature_data = single_features[name]
-        min_x, max_x = np.min(unique_x_data), np.max(unique_x_data)
-        if categorical_names and name in categorical_names:
-            min_x -= 0.5
-            max_x += 0.5
-
-        x_n_blocks = min(n_blocks, len(unique_x_data))
-        segments = (max_x - min_x) / x_n_blocks
-        density = np.histogram(single_feature_data, bins=x_n_blocks)
-        normed_density = density[0] / np.max(density[0])
-
-        for p in range(x_n_blocks):
-            start_x = min_x + segments * p
-            end_x = min_x + segments * (p + 1)
-            alpha = min(1.0, 0.01 + normed_density[p])
-            rect = patches.Rectangle((start_x, min_y - 1),
-                                     end_x - start_x,
-                                     max_y - min_y + 1,
-                                     linewidth=0,
-                                     edgecolor=color,
-                                     facecolor=color,
-                                     alpha=alpha)
-            ax.add_patch(rect)
-
-
-
 def plot_all_hist(hist_data, num_rows, num_cols, color_base, mean_pred,
                   unique_features, categorical_names, col_mapping,
                   feature_mapping, dataset_label='Feature Contribution',
-                  linewidth=3.0, alpha=1.0, feature_to_use=None):
+                  linewidth=3.0, alpha=1.0, feature_to_use=None,
+                  ymin=None, ymax=None):
 
-    hist_data_pairs = sorted(hist_data.items(), key=lambda x: x[0])
-    min_y = np.min([np.min(a) for _, a in hist_data_pairs])
-    max_y = np.max([np.max(a) for _, a in hist_data_pairs])
-    min_y -= 0.01 * (max_y - min_y)
-    max_y += 0.01 * (max_y - min_y)
+    # detect multi-model input
+    if isinstance(hist_data, dict):
+        hist_list = [hist_data]
+        mean_list = [mean_pred]
+        first_hist = hist_data
+    else:
+        hist_list = hist_data
+        mean_list = mean_pred
+        first_hist = hist_data[0]
+
+    hist_data_pairs = sorted(first_hist.items(), key=lambda x: x[0])
 
     if feature_to_use:
-        hist_data_pairs = [v for v in hist_data_pairs if v[0] in feature_to_use]
+        hist_data_pairs = [pair for pair in hist_data_pairs if pair[0] in feature_to_use]
 
-    for i, (name, pred) in enumerate(hist_data_pairs):
-        mean_val = mean_pred.get(name, np.mean(pred))
-        unique_x_data = unique_features[name]
+    # plot each feature
+    for i, (name, _) in enumerate(hist_data_pairs):
         ax = plt.subplot(num_rows, num_cols, i + 1)
+        x = unique_features[name]
+
+        # plot individual model curves
+        for h, m in zip(hist_list, mean_list):
+            pred = h[name] - m[name]
+            if name in categorical_names:
+                x_round = np.round(x, 1)
+                x_plot = x_round - 0.5
+                x_plot[-1] += 1
+                step_loc = "mid" if len(x_round) <= 2 else "post"
+                ax.step(x_plot, pred, color=color_base, alpha=0.35,
+                        linewidth=1, where=step_loc)
+            else:
+                ax.plot(x, pred, color=color_base, alpha=0.35, linewidth=1)
+
+        # plot average curve
+        avg_curve = np.mean([h[name] - m[name] for h, m in zip(hist_list, mean_list)], axis=0)
 
         if name in categorical_names:
-            unique_x_data = np.round(unique_x_data, 1)
-            step_loc = "mid" if len(unique_x_data) <= 2 else "post"
-            unique_plot_data = np.array(unique_x_data) - 0.5
-            unique_plot_data[-1] += 1
-            ax.step(unique_plot_data, pred - mean_val, color=color_base,
-                    linewidth=linewidth, where=step_loc, alpha=alpha)
-            labels, rot = feature_mapping.get(name, (unique_x_data, None))
-            ax.set_xticks(unique_x_data)
-            ax.set_xticklabels(labels, rotation=rot, fontsize='x-large')
+            ax.step(x_plot, avg_curve, color=color_base, linewidth=3, where=step_loc)
+            labels, rot = feature_mapping.get(name, (x_round, None))
+            ax.set_xticks(x_round)
+            ax.set_xticklabels(labels, rotation=rot, fontsize='large')
         else:
-            ax.plot(unique_x_data, pred - mean_val, color=color_base,
-                    linewidth=linewidth, alpha=alpha)
-            ax.tick_params(labelsize='x-large')
+            ax.plot(x, avg_curve, color=color_base, linewidth=3)
+            ax.tick_params(labelsize='large')
 
-        ax.set_ylim(min_y, max_y)
-        min_x, max_x = np.min(unique_x_data), np.max(unique_x_data)
+        # unified y limits
+        ax.set_ylim(ymin, ymax)
+
+        # x limits
+        min_x, max_x = np.min(x), np.max(x)
         if name in categorical_names:
             min_x -= 0.5
             max_x += 0.5
         ax.set_xlim(min_x, max_x)
+
         if i % num_cols == 0:
             ax.set_ylabel(dataset_label, fontsize='x-large')
         ax.set_xlabel(col_mapping.get(name, name), fontsize='x-large')
 
-    return min_y, max_y
+    return ymin, ymax
 
+def shade_by_density_blocks(hist_data, unique_features, single_features,
+                            n_blocks=5, color=(0.9, 0.5, 0.5),
+                            categorical_names=None, feature_to_use=None,
+                            ymin=None, ymax=None):
+
+    fig = plt.gcf()
+    axes = fig.get_axes()
+
+    hist_data_pairs = sorted(hist_data.items(), key=lambda x: x[0])
+    if feature_to_use:
+        hist_data_pairs = [v for v in hist_data_pairs if v[0] in feature_to_use]
+
+    for i, (name, _) in enumerate(hist_data_pairs):
+        ax = axes[i]
+        x = unique_features[name]
+        data = single_features[name]
+
+        min_x, max_x = np.min(x), np.max(x)
+        if categorical_names and name in categorical_names:
+            min_x -= 0.5
+            max_x += 0.5
+
+        x_n_blocks = min(n_blocks, len(x))
+        segments = (max_x - min_x) / x_n_blocks
+        density = np.histogram(data, bins=x_n_blocks)[0]
+        density = density / np.max(density)
+
+        for p in range(x_n_blocks):
+            start = min_x + segments * p
+            end = min_x + segments * (p + 1)
+            alpha = min(1.0, 0.01 + density[p])
+
+            rect = patches.Rectangle(
+                (start, ymin),
+                end - start,
+                ymax - ymin,
+                facecolor=color,
+                edgecolor=color,
+                linewidth=0,
+                alpha=alpha
+            )
+            ax.add_patch(rect)
 
 def plot_nam_contributions_with_density(
     hist_data,
@@ -418,20 +437,42 @@ def plot_nam_contributions_with_density(
     dataset_label="Feature Contribution",
     return_limits=False
 ):
-
     if colors is None:
         colors = [[0.9, 0.4, 0.5], [0.5, 0.9, 0.4], [0.4, 0.5, 0.9], [0.9, 0.5, 0.9]]
 
     num_features = len(hist_data) if feature_to_use is None else len(feature_to_use)
     num_rows = int(np.ceil(num_features / num_cols))
 
+    # build figure
     fig = plt.figure(
         figsize=(num_cols * figsize_scale, num_rows * figsize_scale),
-        facecolor='w', edgecolor='k'
+        facecolor='w',
+        edgecolor='k'
     )
 
-    # Plot feature curves first
-    min_y, max_y = plot_all_hist(
+    # detect single or multi-model
+    if isinstance(hist_data, dict):
+        hist_list = [hist_data]
+        mean_list = [mean_pred]
+    else:
+        hist_list = hist_data
+        mean_list = mean_pred
+
+    # ---- Compute unified y limits ----
+    global_vals = []
+    for h, m in zip(hist_list, mean_list):
+        for name in h:
+            global_vals.append(h[name] - m[name])
+    global_vals = np.concatenate(global_vals)
+
+    base_min = np.min(global_vals)
+    base_max = np.max(global_vals)
+
+    ymin = base_min - 1
+    ymax = base_max + 1
+
+    # ---- plot curves ----
+    plot_all_hist(
         hist_data=hist_data,
         num_rows=num_rows,
         num_cols=num_cols,
@@ -443,25 +484,26 @@ def plot_nam_contributions_with_density(
         feature_mapping=feature_mapping,
         dataset_label=dataset_label,
         feature_to_use=feature_to_use,
+        ymin=ymin,
+        ymax=ymax
     )
 
-    # Overlay density shading
+    # ---- shading ----
     shade_by_density_blocks(
-        hist_data=hist_data,
+        hist_data=hist_data[0] if isinstance(hist_data, list) else hist_data,
         unique_features=unique_features,
         single_features=single_features,
-        num_rows=num_rows,
-        num_cols=num_cols,
         n_blocks=n_blocks,
         color=colors[0],
         categorical_names=categorical_names,
         feature_to_use=feature_to_use,
-        fig=fig
+        ymin=ymin,
+        ymax=ymax
     )
 
     plt.subplots_adjust(hspace=0.25)
     plt.show()
 
     if return_limits:
-        return fig, (min_y, max_y)
+        return fig, (ymin, ymax)
     return fig
