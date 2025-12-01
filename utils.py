@@ -345,10 +345,10 @@ def plot_all_hist(hist_data, num_rows, num_cols, color_base, mean_pred,
                 x_plot = x_round - 0.5
                 x_plot[-1] += 1
                 step_loc = "mid" if len(x_round) <= 2 else "post"
-                ax.step(x_plot, pred, color=color_base, alpha=0.35,
+                ax.step(x_plot, pred, color=color_base, alpha=0.1,
                         linewidth=1, where=step_loc)
             else:
-                ax.plot(x, pred, color=color_base, alpha=0.35, linewidth=1)
+                ax.plot(x, pred, color=color_base, alpha=0.1, linewidth=1)
 
         # plot average curve
         avg_curve = np.mean([h[name] - m[name] for h, m in zip(hist_list, mean_list)], axis=0)
