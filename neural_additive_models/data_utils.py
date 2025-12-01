@@ -37,6 +37,8 @@ import tensorflow.compat.v1 as tf
 from sklearn.datasets import fetch_california_housing
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OrdinalEncoder
+
 gfile = tf.gfile
 
 DATA_PATH = 'gs://nam_datasets/data'
@@ -303,38 +305,55 @@ def load_mimic2_data():
   }
 
 
+
 def load_recidivism_data():
-  """Loads the ProPublica COMPAS recidivism dataset.
-
-  COMPAS is a proprietary score developed to predict re-cidivism risk, which is
-  used to inform bail, sentencing and parole decisions. In 2016, ProPublica
-  released recidivism data on defendants in Broward County, Florida. See
-  https://www.propublica.org/datastore/dataset/compas-recidivism-risk-score-data-and-analysis
-  for more info.
-
-  Returns:
-    A dict containing the `problem` type (i.e. classification) and the
-    input features `X` as a pandas.Dataframe and the labels `y` as a pd.Series.
+  """
+  Loads the ProPublica COMPAS recidivism dataset (two-year recidivism) 
+  and applies the official preprocessing used in fairness papers.
   """
 
-  # Create column names
-  attr_dict_path = osp.join(DATA_PATH, 'recidivism/recid.attr')
-  attributes = gfile.Open(attr_dict_path, 'r').readlines()
-  column_names = [x.split(':')[0] for x in attributes]
+  df = pd.read_csv('compas-scores-two-years.csv')
 
-  df = read_dataset(
-      'recidivism/recid.data',
-      header=None,
-      names=column_names,
-      delim_whitespace=True)
-  train_cols = column_names[:-1]
-  label = column_names[-1]
-  x_df = df[train_cols]
-  y_df = df[label]
+  # 1. Apply official ProPublica filters
+
+  df = df[
+      (df["days_b_screening_arrest"] <= 30) &
+      (df["days_b_screening_arrest"] >= -30) &
+      (df["is_recid"] != -1) &
+      (df["c_charge_degree"] != "O") &
+      (df["score_text"] != "N/A")
+  ].copy()
+
+  # 2. Compute length_of_stay
+  df["c_jail_in"] = pd.to_datetime(df["c_jail_in"], errors="coerce")
+  df["c_jail_out"] = pd.to_datetime(df["c_jail_out"], errors="coerce")
+
+  df["length_of_stay"] = (df["c_jail_out"] - df["c_jail_in"]).dt.days
+  df["length_of_stay"] = df["length_of_stay"].fillna(0)
+  df.loc[df["length_of_stay"] < 0, "length_of_stay"] = 0
+
+  # 3. Select the 6 features used in the paper
+
+  feature_cols = [
+      "age",
+      "c_charge_degree",
+      "race",
+      "sex",
+      "priors_count",
+      "length_of_stay"
+  ]
+
+  X = df[feature_cols].copy()
+
+  enc = OrdinalEncoder()
+  X[["c_charge_degree","race","sex"]] = enc.fit_transform(X[["c_charge_degree","race","sex"]])
+
+  y = df["two_year_recid"].astype(int)
+
   return {
-      'problem': 'classification',
-      'X': x_df,
-      'y': y_df,
+      "problem": "classification",
+      "X": X,
+      "y": y
   }
 
 
@@ -393,7 +412,7 @@ def load_california_housing_data(
   housing = fetch_california_housing()
   feature_names = list(housing.feature_names)
   return {
-      'problem': 'classification',
+      'problem': 'regression',
       'X': pd.DataFrame(housing.data, columns=feature_names),
       'y': housing.target,
   }
