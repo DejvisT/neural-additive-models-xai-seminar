@@ -315,7 +315,7 @@ def plot_all_hist(hist_data, num_rows, num_cols, color_base, mean_pred,
                   unique_features, categorical_names, col_mapping,
                   feature_mapping, dataset_label='Feature Contribution',
                   linewidth=3.0, alpha=1.0, feature_to_use=None,
-                  ymin=None, ymax=None):
+                  ymin=None, ymax=None, x_limits=None, y_limits=None):
 
     # detect multi-model input
     if isinstance(hist_data, dict):
@@ -362,15 +362,29 @@ def plot_all_hist(hist_data, num_rows, num_cols, color_base, mean_pred,
             ax.plot(x, avg_curve, color=color_base, linewidth=3)
             ax.tick_params(labelsize='large')
 
-        # unified y limits
-        ax.set_ylim(ymin, ymax)
+        if y_limits is not None and name in y_limits:
+            feature_ymin, feature_ymax = y_limits[name]
+            ax.set_ylim(feature_ymin, feature_ymax)
+        else:
+            ax.set_ylim(ymin, ymax)
 
-        # x limits
-        min_x, max_x = np.min(x), np.max(x)
-        if name in categorical_names:
-            min_x -= 0.5
-            max_x += 0.5
-        ax.set_xlim(min_x, max_x)
+        if x_limits is not None and name in x_limits:
+            x_limit_val = x_limits[name]
+            if isinstance(x_limit_val, (tuple, list)) and len(x_limit_val) == 2:
+                min_x, max_x = x_limit_val
+            else:
+                min_x = np.min(x)
+                max_x = x_limit_val
+            if name in categorical_names:
+                min_x -= 0.5
+                max_x += 0.5
+            ax.set_xlim(min_x, max_x)
+        else:
+            min_x, max_x = np.min(x), np.max(x)
+            if name in categorical_names:
+                min_x -= 0.5
+                max_x += 0.5
+            ax.set_xlim(min_x, max_x)
 
         if i % num_cols == 0:
             ax.set_ylabel(dataset_label, fontsize='x-large')
@@ -381,7 +395,7 @@ def plot_all_hist(hist_data, num_rows, num_cols, color_base, mean_pred,
 def shade_by_density_blocks(hist_data, unique_features, single_features,
                             n_blocks=5, color=(0.9, 0.5, 0.5),
                             categorical_names=None, feature_to_use=None,
-                            ymin=None, ymax=None):
+                            ymin=None, ymax=None, x_limits=None, y_limits=None):
 
     fig = plt.gcf()
     axes = fig.get_axes()
@@ -395,25 +409,58 @@ def shade_by_density_blocks(hist_data, unique_features, single_features,
         x = unique_features[name]
         data = single_features[name]
 
-        min_x, max_x = np.min(x), np.max(x)
-        if categorical_names and name in categorical_names:
-            min_x -= 0.5
-            max_x += 0.5
+        if x_limits is not None and name in x_limits:
 
-        x_n_blocks = min(n_blocks, len(x))
-        segments = (max_x - min_x) / x_n_blocks
-        density = np.histogram(data, bins=x_n_blocks)[0]
-        density = density / np.max(density)
+            x_limit_val = x_limits[name]
+            if isinstance(x_limit_val, (tuple, list)) and len(x_limit_val) == 2:
+
+                min_x_orig, max_x_orig = x_limit_val
+            else:
+                min_x_orig = np.min(x)
+                max_x_orig = x_limit_val
+        else:
+            # Use data limits
+            min_x_orig, max_x_orig = np.min(x), np.max(x)
+        
+        if categorical_names and name in categorical_names:
+            min_x = min_x_orig - 0.5
+            max_x = max_x_orig + 0.5
+        else:
+            min_x = min_x_orig
+            max_x = max_x_orig
+        
+        if y_limits is not None and name in y_limits:
+            feature_ymin, feature_ymax = y_limits[name]
+        else:
+            feature_ymin, feature_ymax = ymin, ymax
+
+        data_filtered = data[(data >= min_x_orig) & (data <= max_x_orig)]
+        
+        if len(data_filtered) == 0:
+            continue
+
+        x_visible = x[(x >= min_x_orig) & (x <= max_x_orig)]
+        x_n_blocks = min(n_blocks, max(len(x_visible), 1))
+        
+        range_size = max_x_orig - min_x_orig
+        if range_size > 0 and range_size < 10:
+            x_n_blocks = min(x_n_blocks, int(range_size) + 1)
+        
+        density, bin_edges = np.histogram(data_filtered, bins=x_n_blocks, range=(min_x, max_x))
+        if np.max(density) > 0:
+            density = density / np.max(density)
+        else:
+            density = np.zeros(x_n_blocks)
 
         for p in range(x_n_blocks):
-            start = min_x + segments * p
-            end = min_x + segments * (p + 1)
+            start = bin_edges[p]
+            end = bin_edges[p + 1]
             alpha = min(1.0, 0.01 + density[p])
 
             rect = patches.Rectangle(
-                (start, ymin),
+                (start, feature_ymin),
                 end - start,
-                ymax - ymin,
+                feature_ymax - feature_ymin,
                 facecolor=color,
                 edgecolor=color,
                 linewidth=0,
@@ -435,7 +482,9 @@ def plot_nam_contributions_with_density(
     num_cols=4,
     figsize_scale=4.5,
     dataset_label="Feature Contribution",
-    return_limits=False
+    return_limits=False,
+    x_limits=None,
+    y_limits=None
 ):
     if colors is None:
         colors = [[0.9, 0.4, 0.5], [0.5, 0.9, 0.4], [0.4, 0.5, 0.9], [0.9, 0.5, 0.9]]
@@ -485,7 +534,9 @@ def plot_nam_contributions_with_density(
         dataset_label=dataset_label,
         feature_to_use=feature_to_use,
         ymin=ymin,
-        ymax=ymax
+        ymax=ymax,
+        x_limits=x_limits,
+        y_limits=y_limits
     )
 
     # ---- shading ----
@@ -498,7 +549,9 @@ def plot_nam_contributions_with_density(
         categorical_names=categorical_names,
         feature_to_use=feature_to_use,
         ymin=ymin,
-        ymax=ymax
+        ymax=ymax,
+        x_limits=x_limits,
+        y_limits=y_limits
     )
 
     plt.subplots_adjust(hspace=0.25)
