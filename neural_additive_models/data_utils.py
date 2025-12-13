@@ -130,7 +130,43 @@ def load_synthetic_data():
   }
 
 
-def load_correlated_data(n=20000, rho=0.95, seed=0):
+def load_correlated_linear_data(n=20000, rho=0.95, seed=0):
+
+    rng = np.random.default_rng(seed)
+
+    # Correlated first 3 features
+    d = 3
+    Sigma = rho ** np.abs(np.subtract.outer(np.arange(d), np.arange(d)))
+    X_corr = rng.multivariate_normal(np.zeros(d), Sigma, size=n)
+
+    # Remaining 7 independent features
+    X_rest = rng.normal(size=(n, 7))
+
+    # Combine full feature matrix
+    X = np.concatenate([X_corr, X_rest], axis=1)
+    feature_names = [f"X{i+1}" for i in range(X.shape[1])]
+
+    # Linear target function
+    x1, x2, x3, x4 = X[:, 0], X[:, 1], X[:, 2], X[:, 3]
+
+    y = (
+        3.0 * x1
+        - 2.0 * x2
+        + 1.5 * x3
+        + 1.0 * x4
+        + rng.normal(0, 0.5, size=n)
+    )
+
+    # Return in same format as NAM-compatible generator
+    return {
+        'problem': 'regression',
+        'X': pd.DataFrame(X, columns=feature_names),
+        'y': y.reshape(-1),
+    }
+
+
+def load_correlated_nonlinear_data(n=20000, rho=0.95, seed=0):
+
     rng = np.random.default_rng(seed)
 
     # Correlated first 3 features
@@ -146,10 +182,14 @@ def load_correlated_data(n=20000, rho=0.95, seed=0):
     feature_names = [f"X{i+1}" for i in range(X.shape[1])]
 
     # Nonlinear target function
-    x1, x4 = X[:, 0], X[:, 3]
-    f1 = 3 * np.sin(2 * np.pi * x1)
-    f4 = 2 * (x4 ** 2 - 0.5)
-    y = f1 + f4 + rng.normal(0, 0.5, size=n)
+    x1, x2, x3, x4 = X[:, 0], X[:, 1], X[:, 2], X[:, 3]
+
+    f1 = 2.0 * np.sin(2 * np.pi * x1)
+    f2 = 1.5 * (x2**2 - 1.0)
+    f3 = np.log(1.0 + x3**2)
+    f4 = 2.0 * (x4**2 - 0.5)
+
+    y = f1 + f2 + f3 + f4 + rng.normal(0, 0.5, size=n)
 
     # Return in same format as NAM-compatible generator
     return {
@@ -517,8 +557,19 @@ def load_dataset(dataset_name):
     dataset = load_california_housing_data()
   elif dataset_name == 'Synthetic':
     dataset = load_synthetic_data()
-  elif dataset_name == 'Correlated':
-    dataset = load_correlated_data()
+  elif dataset_name == 'Correlated_linear':
+    dataset = load_correlated_linear_data(
+        n=20000 if correlated_n is None else int(correlated_n),
+        rho=0.95 if correlated_rho is None else float(correlated_rho),
+        seed=0 if correlated_seed is None else int(correlated_seed))
+  elif dataset_name == 'Correlated_nonlinear':
+    dataset = load_correlated_nonlinear_data(
+        n=20000 if correlated_n is None else int(correlated_n),
+        rho=0.95 if correlated_rho is None else float(correlated_rho),
+        seed=0 if correlated_seed is None else int(correlated_seed))
+  elif dataset_name in OPENML_SMALL_REGRESSION:
+    dataset = load_openml_regression(dataset_name)
+  
   else:
     raise ValueError('{} not found!'.format(dataset_name))
 

@@ -42,6 +42,15 @@ flags.DEFINE_integer('batch_size', 1024, 'Hyperparameter: batch size.')
 flags.DEFINE_string('logdir', None, 'Path to dir where to store summaries.')
 flags.DEFINE_string('dataset_name', 'Teleco',
                     'Name of the dataset to load for training.')
+flags.DEFINE_integer(
+    'correlated_n', None,
+    'Number of samples for correlated synthetic datasets (Correlated_linear/Correlated_nonlinear).')
+flags.DEFINE_float(
+    'correlated_rho', None,
+    'Correlation parameter rho in [0,1] for correlated synthetic datasets (Correlated_linear/Correlated_nonlinear).')
+flags.DEFINE_integer(
+    'correlated_seed', None,
+    'Random seed for correlated synthetic datasets (Correlated_linear/Correlated_nonlinear).')
 flags.DEFINE_float('decay_rate', 0.995, 'Hyperparameter: Optimizer decay rate')
 flags.DEFINE_float('dropout', 0.5, 'Hyperparameter: Dropout rate')
 flags.DEFINE_integer(
@@ -318,7 +327,11 @@ def create_test_train_fold(
   If FLAGS.hyperparameter_tuning is True, uses train/val/test split.
   Otherwise, uses standard 5-fold CV split.
   """
-  data_x, data_y, _ = data_utils.load_dataset(FLAGS.dataset_name)
+  data_x, data_y, _ = data_utils.load_dataset(
+      FLAGS.dataset_name,
+      correlated_n=FLAGS.correlated_n,
+      correlated_rho=FLAGS.correlated_rho,
+      correlated_seed=FLAGS.correlated_seed)
   tf.logging.info('Dataset: %s, Size: %d', FLAGS.dataset_name, data_x.shape[0])
   
   if FLAGS.hyperparameter_tuning:
