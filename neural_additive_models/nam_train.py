@@ -76,6 +76,15 @@ flags.DEFINE_boolean(
 flags.DEFINE_boolean('debug', False, 'Debug mode. Log additional things')
 flags.DEFINE_boolean('shallow', False, 'Whether to use shallow or deep NN.')
 flags.DEFINE_boolean('use_dnn', False, 'Deep NN baseline.')
+flags.DEFINE_boolean('hyperparameter_tuning', False,
+                     'If True, use train/val/test split for hyperparameter tuning. '
+                     'If False, use standard 5-fold CV.')
+flags.DEFINE_float('test_size', 0.2,
+                   'Proportion of dataset for test set (only used in hyperparameter_tuning mode).')
+flags.DEFINE_float('val_size', 0.2,
+                   'Proportion of remaining data for validation set (only used in hyperparameter_tuning mode).')
+flags.DEFINE_integer('hp_random_state', 42,
+                     'Random seed for data splitting in hyperparameter tuning mode.')
 flags.DEFINE_integer('early_stopping_epochs', 60, 'Early stopping epochs')
 _N_FOLDS = 5
 GraphOpsAndTensors = graph_builder.GraphOpsAndTensors
@@ -304,17 +313,39 @@ def training(x_train, y_train, x_validation,
 def create_test_train_fold(
     fold_num
 ):
-  """Splits the dataset into training and held-out test set."""
+  """Splits the dataset into training and held-out test set.
+  
+  If FLAGS.hyperparameter_tuning is True, uses train/val/test split.
+  Otherwise, uses standard 5-fold CV split.
+  """
   data_x, data_y, _ = data_utils.load_dataset(FLAGS.dataset_name)
   tf.logging.info('Dataset: %s, Size: %d', FLAGS.dataset_name, data_x.shape[0])
-  tf.logging.info('Cross-val fold: %d/%d', FLAGS.fold_num, _N_FOLDS)
-  # Get the training and test set based on the StratifiedKFold split
-  (x_train_all, y_train_all), test_dataset = data_utils.get_train_test_fold(
-      data_x,
-      data_y,
-      fold_num=fold_num,
-      num_folds=_N_FOLDS,
-      stratified=not FLAGS.regression)
+  
+  if FLAGS.hyperparameter_tuning:
+    # Hyperparameter tuning mode: use train/val/test split
+    tf.logging.info('Using hyperparameter tuning mode: train/val/test split')
+    (x_train_all, y_train_all), (x_val, y_val), test_dataset = \
+        data_utils.get_train_val_test_split(
+            data_x, data_y,
+            test_size=FLAGS.test_size,
+            val_size=FLAGS.val_size,
+            stratified=not FLAGS.regression,
+            random_state=FLAGS.hp_random_state)
+    
+    tf.logging.info('Train set: %d samples', x_train_all.shape[0])
+    tf.logging.info('Validation set (for HP tuning): %d samples', x_val.shape[0])
+    tf.logging.info('Test set: %d samples', test_dataset[0].shape[0])
+  else:
+    # Standard mode: use 5-fold CV
+    tf.logging.info('Cross-val fold: %d/%d', FLAGS.fold_num, _N_FOLDS)
+    # Get the training and test set based on the StratifiedKFold split
+    (x_train_all, y_train_all), test_dataset = data_utils.get_train_test_fold(
+        data_x,
+        data_y,
+        fold_num=fold_num,
+        num_folds=_N_FOLDS,
+        stratified=not FLAGS.regression)
+  
   data_gen = data_utils.split_training_dataset(
       x_train_all,
       y_train_all,
