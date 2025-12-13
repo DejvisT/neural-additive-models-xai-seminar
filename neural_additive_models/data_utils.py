@@ -579,6 +579,63 @@ def get_train_test_fold(
       fold_num -= 1
 
 
+def get_train_val_test_split(
+    data_x,
+    data_y,
+    test_size = 0.2,
+    val_size = 0.2,
+    stratified = True,
+    random_state = 42):
+  """Splits dataset into train, validation, and test sets for hyperparameter tuning.
+
+  This function creates a three-way split:
+  - Train set: Used for training models
+  - Validation set: Used for hyperparameter selection (random search, grid search)
+  - Test set: Held out completely, only for final evaluation
+
+  Args:
+    data_x: Full dataset features, with shape (n_samples, n_features).
+    data_y: Full dataset labels, with shape (n_samples,).
+    test_size: Proportion of total dataset to use as test set (default: 0.2 = 20%).
+    val_size: Proportion of total dataset to use as validation set (default: 0.2 = 20%).
+    stratified: Whether to preserve the percentage of samples for each class in
+      the splits (only applicable for classification).
+    random_state: Seed used by the random number generator.
+
+  Returns:
+    (x_train, y_train): Training data split.
+    (x_val, y_val): Validation data split (for hyperparameter tuning).
+    (x_test, y_test): Test data split (held out for final evaluation).
+  """
+  from sklearn.model_selection import train_test_split
+
+  # First split: separate test set
+  # For classification, check if we can stratify (y should be integer-like)
+  can_stratify = stratified and (data_y.dtype.kind in ['i', 'u'] or 
+                                 np.all(data_y == data_y.astype(int)))
+  x_train_val, x_test, y_train_val, y_test = train_test_split(
+      data_x, data_y,
+      test_size=test_size,
+      random_state=random_state,
+      stratify=data_y if can_stratify else None
+  )
+
+  # Second split: separate validation set from remaining data
+  # val_size is specified as proportion of total, so we need to convert it
+  # to proportion of remaining data (train_val)
+  # If val_size = 0.2 of total, and we have (1 - test_size) remaining,
+  # then val_size_adjusted = val_size / (1 - test_size)
+  val_size_adjusted = val_size / (1 - test_size)
+  x_train, x_val, y_train, y_val = train_test_split(
+      x_train_val, y_train_val,
+      test_size=val_size_adjusted,
+      random_state=random_state,
+      stratify=y_train_val if can_stratify else None
+  )
+
+  return (x_train, y_train), (x_val, y_val), (x_test, y_test)
+
+
 def split_training_dataset(
     data_x,
     data_y,
