@@ -46,12 +46,14 @@ def inverse_min_max_scaler(x, min_val, max_val):
 
 
 
-def load_nam_checkpoint(ckpt_dir: str):
+def load_nam_checkpoint(ckpt_dir: str, hyperparameters=None):
     """
     Load a NAM (Neural Additive Model) from a TensorFlow v1 checkpoint directory.
 
     Args:
         ckpt_dir (str): Path to the checkpoint directory containing .index and .data files.
+        hyperparameters (dict, optional): Dict with keys 'dropout', 'feature_dropout', 'activation', 'shallow'.
+                                         If None, uses defaults (dropout=0.0, feature_dropout=0.0, activation='relu', shallow=False).
 
     Returns:
         (nam, sess): A tuple containing the restored NAM model and active TensorFlow session.
@@ -85,15 +87,16 @@ def load_nam_checkpoint(ckpt_dir: str):
     print("Feature widths:", num_units_list)
     print("Num input features:", num_inputs)
 
-    # --- Build the model ---
+    # --- Build the model with hyperparameters ---
     tf.reset_default_graph()
+    hp = hyperparameters or {}
     nam = NAM(
         num_inputs=num_inputs,
         num_units=num_units_list,
-        dropout=0.0,
-        feature_dropout=0.0,
-        activation='relu',
-        shallow=False,
+        dropout=hp.get('dropout', 0.0),
+        feature_dropout=hp.get('feature_dropout', 0.0),
+        activation=hp.get('activation', 'relu'),
+        shallow=hp.get('shallow', False),
         trainable=False,
         name_scope='model_0'
     )
