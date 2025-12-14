@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
 
-def load_col_min_max(dataset_name):
+def load_col_min_max(dataset_name, correlated_n=None, rho=None, seed=None):
   """Loads the dataset according to the `dataset_name` passed."""
   if dataset_name == 'Housing':
     dataset = data_utils.load_california_housing_data()
@@ -24,8 +24,10 @@ def load_col_min_max(dataset_name):
     dataset = load_mimic2_data()
   elif dataset_name == 'Credit':
     dataset = data_utils.load_credit_data()
-  elif dataset_name == 'Correlated':
-    dataset = data_utils.load_correlated_data()
+  elif dataset_name == 'Correlated_linear':
+    dataset = data_utils.load_correlated_linear_data(correlated_n, rho, seed)
+  elif dataset_name == 'Correlated_nonlinear':
+    dataset = data_utils.load_correlated_nonlinear_data(correlated_n, rho, seed)
   elif dataset_name == 'Synthetic':
     dataset = data_utils.load_synthetic_data()
   else:
@@ -204,7 +206,8 @@ def get_dataset_config(dataset_name, column_names):
         },
         'Fico': {},
         'Housing': {},
-        'Correlated': {},
+        'Correlated_linear': {},
+        'Correlated_nonlinear': {},
         'Credit':{},
         'Synthetic':{}
     }
@@ -249,10 +252,10 @@ def get_dataset_config(dataset_name, column_names):
         }
     }
 
-    if dataset_name in ['Credit', 'Mimic2', 'Correlated', 'Synthetic']:
+    if dataset_name in ['Credit', 'Mimic2', 'Correlated_linear', 'Correlated_nonlinear', 'Synthetic']:
         COL_NAMES[dataset_name] = {x: x for x in column_names}
 
-    if dataset_name in ['Housing', 'Credit', 'Correlated', 'Synthetic']:
+    if dataset_name in ['Housing', 'Credit', 'Correlated_linear', 'Correlated_nonlinear', 'Synthetic']:
         categorical_names = []
     elif dataset_name == 'Mimic2':
         categorical_names = ['AIDS','AdmissionType','GCS','Lymphoma','Temperature','MetastaticCancer','Renal']
