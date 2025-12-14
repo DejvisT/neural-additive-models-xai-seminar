@@ -519,11 +519,17 @@ def transform_data(df):
   return df, new_column_names
 
 
-def load_dataset(dataset_name):
+def load_dataset(dataset_name,
+                 correlated_n=None,
+                 correlated_rho=None,
+                 correlated_seed=None):
   """Loads the dataset according to the `dataset_name` passed.
 
   Args:
     dataset_name: Name of the dataset to be loaded.
+    correlated_n: Optional int. Only used for correlated synthetic datasets.
+    correlated_rho: Optional float in [0, 1]. Only used for correlated synthetic datasets.
+    correlated_seed: Optional int. Only used for correlated synthetic datasets.
 
   Returns:
     data_x: np.ndarray of size (n_examples, n_features) containining the

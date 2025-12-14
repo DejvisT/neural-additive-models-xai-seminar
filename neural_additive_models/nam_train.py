@@ -87,7 +87,7 @@ flags.DEFINE_boolean('shallow', False, 'Whether to use shallow or deep NN.')
 flags.DEFINE_boolean('use_dnn', False, 'Deep NN baseline.')
 flags.DEFINE_boolean('hyperparameter_tuning', False,
                      'If True, use train/val/test split for hyperparameter tuning. '
-                     'If False, use standard 5-fold CV.')
+                     'If False, use standard cross-validation with FLAGS.n_folds folds.')
 flags.DEFINE_float('test_size', 0.2,
                    'Proportion of dataset for test set (only used in hyperparameter_tuning mode).')
 flags.DEFINE_float('val_size', 0.2,
@@ -95,7 +95,9 @@ flags.DEFINE_float('val_size', 0.2,
 flags.DEFINE_integer('hp_random_state', 42,
                      'Random seed for data splitting in hyperparameter tuning mode.')
 flags.DEFINE_integer('early_stopping_epochs', 60, 'Early stopping epochs')
-_N_FOLDS = 5
+flags.DEFINE_integer(
+    'n_folds', 5, 'Number of folds to use for cross-validation (default: 5)')
+
 GraphOpsAndTensors = graph_builder.GraphOpsAndTensors
 EvaluationMetric = graph_builder.EvaluationMetric
 
@@ -325,7 +327,7 @@ def create_test_train_fold(
   """Splits the dataset into training and held-out test set.
   
   If FLAGS.hyperparameter_tuning is True, uses train/val/test split.
-  Otherwise, uses standard 5-fold CV split.
+  Otherwise, uses standard cross-validation split with FLAGS.n_folds folds.
   """
   data_x, data_y, _ = data_utils.load_dataset(
       FLAGS.dataset_name,
@@ -349,14 +351,14 @@ def create_test_train_fold(
     tf.logging.info('Validation set (for HP tuning): %d samples', x_val.shape[0])
     tf.logging.info('Test set: %d samples', test_dataset[0].shape[0])
   else:
-    # Standard mode: use 5-fold CV
-    tf.logging.info('Cross-val fold: %d/%d', FLAGS.fold_num, _N_FOLDS)
+    # Standard mode: use cross-validation
+    tf.logging.info('Cross-val fold: %d/%d', FLAGS.fold_num, FLAGS.n_folds)
     # Get the training and test set based on the StratifiedKFold split
     (x_train_all, y_train_all), test_dataset = data_utils.get_train_test_fold(
         data_x,
         data_y,
         fold_num=fold_num,
-        num_folds=_N_FOLDS,
+        num_folds=FLAGS.n_folds,
         stratified=not FLAGS.regression)
   
   data_gen = data_utils.split_training_dataset(
