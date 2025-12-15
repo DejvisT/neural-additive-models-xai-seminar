@@ -1,0 +1,28 @@
+{
+  "dataset_name": "Correlated_linear",
+  "regression": true,
+  "activation": "relu",
+  "shallow": true,
+  "num_basis_functions": 128,
+  "training_epochs": 500,
+  "early_stopping_epochs": 500,
+  "batch_size": 1024,
+  "units_multiplier": 2,
+  "decay_rate": 0.995,
+  "tf_seed": 1,
+  "debug": true,
+  "use_dnn": false,
+  "n_models": 1,
+  "max_checkpoints_to_keep": 1,
+  "save_checkpoint_every_n_epochs": 10,
+  "hyperparameter_tuning": false,
+  "num_splits": 1,
+  "data_split": 1,
+  "n_folds": 2,
+  "fold_num": 1,
+  "correlated_n": 20000,
+  "correlated_rho": null,
+  "correlated_seed": null,
+  "logdir": null
+}
+
