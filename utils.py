@@ -28,8 +28,6 @@ def load_col_min_max(dataset_name, correlated_n=None, rho=None, seed=None):
     dataset = data_utils.load_correlated_linear_data(correlated_n, rho, seed)
   elif dataset_name == 'Correlated_nonlinear':
     dataset = data_utils.load_correlated_nonlinear_data(correlated_n, rho, seed)
-  elif dataset_name == 'Synthetic':
-    dataset = data_utils.load_synthetic_data()
   else:
     raise ValueError('{} not found!'.format(dataset_name))
 
@@ -208,8 +206,7 @@ def get_dataset_config(dataset_name, column_names):
         'Housing': {},
         'Correlated_linear': {},
         'Correlated_nonlinear': {},
-        'Credit':{},
-        'Synthetic':{}
+        'Credit':{}
     }
 
     COL_NAMES = {
@@ -252,10 +249,10 @@ def get_dataset_config(dataset_name, column_names):
         }
     }
 
-    if dataset_name in ['Credit', 'Mimic2', 'Correlated_linear', 'Correlated_nonlinear', 'Synthetic']:
+    if dataset_name in ['Credit', 'Mimic2', 'Correlated_linear', 'Correlated_nonlinear']:
         COL_NAMES[dataset_name] = {x: x for x in column_names}
 
-    if dataset_name in ['Housing', 'Credit', 'Correlated_linear', 'Correlated_nonlinear', 'Synthetic']:
+    if dataset_name in ['Housing', 'Credit', 'Correlated_linear', 'Correlated_nonlinear']:
         categorical_names = []
     elif dataset_name == 'Mimic2':
         categorical_names = ['AIDS','AdmissionType','GCS','Lymphoma','Temperature','MetastaticCancer','Renal']
