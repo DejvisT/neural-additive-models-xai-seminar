@@ -23,6 +23,11 @@ from typing import Tuple, Dict, Union, Iterator, List
 import numpy as np
 import pandas as pd
 
+from sklearn.datasets import fetch_openml  #added new OpenML loader
+from sklearn.impute import SimpleImputer    #added new Imputer
+
+
+
 from sklearn.compose import ColumnTransformer
 from sklearn.datasets import load_breast_cancer
 from sklearn.model_selection import KFold
@@ -63,6 +68,151 @@ def read_dataset(dataset_name,
     df = pd.read_csv(
         f, header=header, names=names, delim_whitespace=delim_whitespace)
   return df
+
+
+
+#=========================adding a OpenML Generic Helper Function=========================
+from typing import Optional
+
+def _load_openml_dataset(
+    data_id: int,
+    task_type: str,
+    target_name: str = None,
+    positive_class: str = None,
+):
+  """Generic OpenML loader that returns a NAM-compatible dict.
+
+  Args:
+    openml_id: OpenML numeric id.
+    task_type: 'regression' or 'classification'.
+    target_name: Optional; if None, uses ds.target as given by OpenML.
+    positive_class: For binary classification, which label to treat as 1.
+  """
+  ds = fetch_openml(data_id=data_id, as_frame=True)
+
+  # --- features / target ---
+  if target_name is None:
+    X = ds.data.copy()
+    y = ds.target.copy()
+  else:
+    frame = ds.frame.copy()
+    y = frame[target_name]
+    X = frame.drop(columns=[target_name])
+
+  # --- handle missing values in X ---
+
+  # 1) numeric columns: fill NaN with column median
+  num_cols = X.select_dtypes(include=["number"]).columns
+  for col in num_cols:
+    s = X[col]
+    if s.isna().any():
+      med = s.median()
+      # if the whole column is NaN, median will be NaN → fall back to 0
+      if pd.isna(med):
+        med = 0.0
+      X[col] = s.fillna(med)
+
+  # 2) categorical / object / bool: fill NaN with most frequent (mode)
+  cat_cols = X.select_dtypes(include=["object", "category", "bool"]).columns
+  for col in cat_cols:
+    s = X[col].astype("object")
+    if s.isna().any():
+      mode = s.mode(dropna=True)
+      fill_val = mode.iloc[0] if not mode.empty else "missing"
+      X[col] = s.fillna(fill_val)
+
+  # --- handle target ---
+  if task_type == "regression":
+    # make sure target is numeric
+    y = pd.to_numeric(y, errors="coerce")
+    mask = ~y.isna()
+    X = X.loc[mask]
+    y = y.loc[mask]
+    return {"problem": "regression", "X": X, "y": y.values}
+
+  # classification (we assume *binary* for NAM)
+  y = y.astype(str)
+  classes = sorted(pd.unique(y))
+  if len(classes) != 2:
+    raise ValueError(
+        f"Dataset {openml_id} is not binary (classes: {classes}). "
+        "Please choose a different dataset or pre-binarize."
+    )
+
+  if positive_class is None:
+    # default: second class alphabetically, but you can override
+    positive_class = classes[1]
+
+  y_bin = (y == positive_class).astype(int)
+  return {"problem": "classification", "X": X, "y": y_bin}
+
+
+#=========================adding a OpenML Generic Helper <END>=========================
+
+
+#=========================adding OpenML datasets=========================
+
+def load_openml_pima_diabetes():
+  """
+  Pima Indians Diabetes (binary classification).
+  Target labels are typically 'tested_positive' / 'tested_negative'.
+  """
+
+
+  return _load_openml_dataset(
+      data_id=38,
+      task_type="classification",
+      positive_class="tested_positive",  # 1 = tested_positive
+  )
+
+
+def load_openml_breast_cancer_wisconsin():
+  """
+  Breast Cancer Wisconsin (Diagnostic) – binary classification.
+  """
+  # Breast cancer (diagnostic): OpenML id 1510
+  return _load_openml_dataset(
+      data_id=1510,
+      task_type="classification",
+      # positive_class=None -> 2nd sorted class is 1
+  )
+
+
+def load_openml_diabetes_regression():
+  """
+  Diabetes (regression) dataset on OpenML.
+  """
+  # Diabetes regression: OpenML id 37
+  return _load_openml_dataset(
+      data_id=37,
+      task_type="regression",
+  )
+
+
+def load_openml_wine_red():
+  """
+  Wine Quality (red) – usually treated as regression on the 'quality' score.
+  """
+  # Wine quality red: OpenML id 287
+  return _load_openml_dataset(
+      data_id=287,
+      task_type="regression",
+      target_name="quality",  # being explicit
+  )
+
+
+def load_openml_concrete_strength():
+  """
+  Concrete Compressive Strength – regression.
+  """
+  # Concrete strength: OpenML id 1030
+  return _load_openml_dataset(
+      data_id=1030,
+      task_type="regression",
+      target_name=None  # If this doesn't exist, you can set target_name=None
+  )
+
+#=========================adding OpenML datasets <END>=========================
 
 
 def load_correlated_linear_data(n=20000, rho=0.95, seed=0):
@@ -496,6 +646,20 @@ def load_dataset(dataset_name,
     dataset = load_fico_score_data()
   elif dataset_name == 'Housing':
     dataset = load_california_housing_data()
+
+  # OpenML datasets
+
+  elif dataset_name == 'OpenML_PimaDiabetes':
+    dataset = load_openml_pima_diabetes()
+  elif dataset_name == 'OpenML_BreastCancer':
+    dataset = load_openml_breast_cancer_wisconsin()
+  elif dataset_name == 'OpenML_DiabetesReg':
+    dataset = load_openml_diabetes_regression()
+  elif dataset_name == 'OpenML_WineRed':
+    dataset = load_openml_wine_red()
+  elif dataset_name == 'OpenML_Concrete':
+    dataset = load_openml_concrete_strength()
+
   elif dataset_name == 'Correlated_linear':
     dataset = load_correlated_linear_data(
         n=20000 if correlated_n is None else int(correlated_n),

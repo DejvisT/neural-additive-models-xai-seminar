@@ -1,0 +1,16 @@
+for ($x = 1; $x -le 5; $x++) {
+    for ($s = 1; $s -le 3; $s++) {
+
+        Write-Host "Running fold $x, split $s"
+
+        python -m neural_additive_models.nam_train `
+            --logdir=./OpenML_BreastCancers `
+            --dataset_name=OpenML_BreastCancer `
+            --fold_num=$x `
+            --regression=False `
+            --use_dnn=False `
+            --num_splits=3 `
+            --data_split=$s `
+            --training_epochs=300
+    }
+}

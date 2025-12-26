@@ -10,35 +10,84 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
 
-def load_col_min_max(dataset_name, correlated_n=None, rho=None, seed=None):
-  """Loads the dataset according to the `dataset_name` passed."""
+import numpy as np
+from neural_additive_models import data_utils
+
+def load_col_min_max(dataset_name,
+                     correlated_n=None,
+                     correlated_rho=None,
+                     correlated_seed=None):
+  """Compute per-column (min, max) in the ORIGINAL feature space.
+
+  Works for both the original NAM datasets and the new OpenML_* datasets.
+  """
+#chnaged to incorporate OpenML datasets
+  # ---- Original datasets ----
   if dataset_name == 'Housing':
     dataset = data_utils.load_california_housing_data()
   elif dataset_name == 'BreastCancer':
     dataset = data_utils.load_breast_data()
+  elif dataset_name == 'Adult':
+    dataset = data_utils.load_adult_data()
+  elif dataset_name == 'Credit':
+    dataset = data_utils.load_credit_data()
+  elif dataset_name == 'Heart':
+    dataset = data_utils.load_heart_data()
+  elif dataset_name == 'Mimic2':
+    dataset = data_utils.load_mimic2_data()
   elif dataset_name == 'Recidivism':
     dataset = data_utils.load_recidivism_data()
   elif dataset_name == 'Fico':
     dataset = data_utils.load_fico_score_data()
-  elif dataset_name == 'Mimic2':
-    dataset = load_mimic2_data()
-  elif dataset_name == 'Credit':
-    dataset = data_utils.load_credit_data()
   elif dataset_name == 'Correlated_linear':
-    dataset = data_utils.load_correlated_linear_data(correlated_n, rho, seed)
+    dataset = data_utils.load_correlated_linear_data(
+        n=20000 if correlated_n is None else int(correlated_n),
+        rho=0.95 if correlated_rho is None else float(correlated_rho),
+        seed=0 if correlated_seed is None else int(correlated_seed)
+    )
   elif dataset_name == 'Correlated_nonlinear':
-    dataset = data_utils.load_correlated_nonlinear_data(correlated_n, rho, seed)
-  else:
-    raise ValueError('{} not found!'.format(dataset_name))
+    dataset = data_utils.load_correlated_nonlinear_data(
+        n=20000 if correlated_n is None else int(correlated_n),
+        rho=0.95 if correlated_rho is None else float(correlated_rho),
+        seed=0 if correlated_seed is None else int(correlated_seed)
+    )
 
+  # ---- OpenML regression datasets ----
+  elif dataset_name == 'OpenML_Boston':
+    dataset = data_utils.load_openml_boston()
+  elif dataset_name == 'OpenML_DiabetesReg':
+    dataset = data_utils.load_openml_diabetes_regression()
+  elif dataset_name == 'OpenML_AutoMPG':
+    dataset = data_utils.load_openml_auto_mpg()
+  elif dataset_name == 'OpenML_Concrete':
+    dataset = data_utils.load_openml_concrete_strength()
+  elif dataset_name == 'OpenML_WineRed':
+    dataset = data_utils.load_openml_wine_red()
+
+  # ---- OpenML classification datasets ----
+  elif dataset_name == 'OpenML_BreastCancer':
+    dataset = data_utils.load_openml_breast_cancer_wisconsin()
+  elif dataset_name == 'OpenML_PimaDiabetes':
+    dataset = data_utils.load_openml_pima_diabetes()
+  elif dataset_name == 'OpenML_Titanic':
+    dataset = data_utils.load_openml_titanic_binary()
+
+  else:
+    raise ValueError(f'{dataset_name} not found!')
+
+  # In some synthetic datasets they might wrap data as {'full': {...}}
   if 'full' in dataset:
     dataset = dataset['full']
-  x = dataset['X']
+
+  x = dataset['X']  # this is a pandas DataFrame in ORIGINAL scale
   col_min_max = {}
-  for col in x:
-    unique_vals = x[col].unique()
-    col_min_max[col] = (np.min(unique_vals), np.max(unique_vals))
+  for col in x.columns:
+    vals = x[col].to_numpy()
+    # protect against NaNs
+    col_min_max[col] = (np.nanmin(vals), np.nanmax(vals))
+
   return col_min_max
+
 
 
 def inverse_min_max_scaler(x, min_val, max_val):
@@ -191,79 +240,113 @@ def prepare_feature_arrays(data_x, column_names, col_min_max, inverse_min_max_sc
 
 
 def get_dataset_config(dataset_name, column_names):
-    """Return COL_NAMES, FEATURE_LABEL_MAPPING, and CATEGORICAL_NAMES for dataset."""
+    """Return COL_NAMES, FEATURE_LABEL_MAPPING, and CATEGORICAL_NAMES for dataset.
+
+    COL_NAMES: mapping from internal feature name -> pretty label for plots.
+    FEATURE_LABEL_MAPPING: optional mapping for categorical features:
+        { feature_name: ([tick_labels], rotation_angle_or_None) }
+    CATEGORICAL_NAMES: list of feature names that should be treated as categorical
+                       in the shape plots.
+    """
+
+    # --- Dataset-specific pretty mappings (for known NAM benchmarks) ---
     FEATURE_LABEL_MAPPING = {
         'Recidivism': {
-            'race': (['African\nAmerican', 'Asian', 'Caucasian', 'Hispanic', 'Native\nAmerican', 'Other'], 90),
-            'sex': (['Female', 'Male'], None)
+            'race': (['African\nAmerican', 'Asian', 'Caucasian',
+                      'Hispanic', 'Native\nAmerican', 'Other'], 90),
+            'sex': (['Female', 'Male'], None),
         },
         'Mimic2': {
             'AIDS': (['No', 'Yes'], None),
             'Lymphoma': (['No', 'Yes'], None),
-            'MetastaticCancer': (['No', 'Yes'], None)
+            'MetastaticCancer': (['No', 'Yes'], None),
         },
         'Fico': {},
         'Housing': {},
         'Correlated_linear': {},
         'Correlated_nonlinear': {},
-        'Credit':{}
+        'Credit': {},
+        # You can optionally add OpenML_* here later if you want
+        # custom tick labels for some features.
     }
 
     COL_NAMES = {
         'Recidivism': {
-            'age': 'Age', 'race': 'Race', 'sex': 'Gender',
-            'priors_count': 'Prior Counts', 'length_of_stay': 'Length of Stay',
-            'c_charge_degree': 'Charge Degree'
+            'age': 'Age',
+            'race': 'Race',
+            'sex': 'Gender',
+            'priors_count': 'Prior Counts',
+            'length_of_stay': 'Length of Stay',
+            'c_charge_degree': 'Charge Degree',
         },
         'Housing': {
-            'MedInc': 'Median Income', 'HouseAge': 'Median House Age',
-            'AveRooms': '# Avg Rooms', 'AveBedrms': '# Avg Bedrooms',
-            'Population': 'Block Population', 'AveOccup': '# Avg Occupancy',
-            'Latitude': 'Latitude', 'Longitude': 'Longitude'
+            'MedInc': 'Median Income',
+            'HouseAge': 'Median House Age',
+            'AveRooms': '# Avg Rooms',
+            'AveBedrms': '# Avg Bedrooms',
+            'Population': 'Block Population',
+            'AveOccup': '# Avg Occupancy',
+            'Latitude': 'Latitude',
+            'Longitude': 'Longitude',
         },
-        'Fico':  {
+        'Fico': {
             'MSinceOldestTradeOpen': 'Months Since Oldest Trade Open',
-            'MSinceMostRecentTradeOpen':	'Months Since Most Recent Trade',
-            'AverageMInFile':	'Average Months in File',
-            'NumSatisfactoryTrades': '# Satisfactory Trades',	
-            'NumTrades60Ever2DerogPubRec': '# Trades 60+ Ever',	
-            'NumTrades90Ever2DerogPubRec':	'# Trades 90+ Ever',	
+            'MSinceMostRecentTradeOpen': 'Months Since Most Recent Trade',
+            'AverageMInFile': 'Average Months in File',
+            'NumSatisfactoryTrades': '# Satisfactory Trades',
+            'NumTrades60Ever2DerogPubRec': '# Trades 60+ Ever',
+            'NumTrades90Ever2DerogPubRec': '# Trades 90+ Ever',
             'NumTotalTrades': '# Total Trades',
             'NumTradesOpeninLast12M': '# Trades Open in Last 12 Months',
-            'PercentTradesNeverDelq':	'% Trades Never Delinquent',
-            'MSinceMostRecentDelq':	'Months Since Most Recent Delinquency',	
-            'MaxDelq2PublicRecLast12M':	'Max Delq/Public Records Last Year',
-            'MaxDelqEver':	'Max Delinquency Ever',
-            'PercentInstallTrades':	'% Installment Trades',	
-            'NetFractionInstallBurden':	'Net Fraction Installment Burden',
-            'NumInstallTradesWBalance': 'Number Installment Trades with Balance',	
-            'MSinceMostRecentInqexcl7days':	'Months Since Most Recent Inquiry\n excluding 7 days',	
+            'PercentTradesNeverDelq': '% Trades Never Delinquent',
+            'MSinceMostRecentDelq': 'Months Since Most Recent Delinquency',
+            'MaxDelq2PublicRecLast12M': 'Max Delq/Public Records Last Year',
+            'MaxDelqEver': 'Max Delinquency Ever',
+            'PercentInstallTrades': '% Installment Trades',
+            'NetFractionInstallBurden': 'Net Fraction Installment Burden',
+            'NumInstallTradesWBalance': 'Number Installment Trades with Balance',
+            'MSinceMostRecentInqexcl7days': 'Months Since Most Recent Inquiry\n excluding 7 days',
             'NumInqLast6M': '# Inquiries in Last 6 Months',
             'NumInqLast6Mexcl7days': '# Inquiries in Last 6 Months \n excluding 7 days',
-            'NetFractionRevolvingBurden':	'Net Fraction Revolving Burden',
-            'NumRevolvingTradesWBalance':	'# Revolving Trades with Balance',	
-            'NumBank2NatlTradesWHighUtilization':	'# Bank/Natl Trades with high utilization ratio',	
+            'NetFractionRevolvingBurden': 'Net Fraction Revolving Burden',
+            'NumRevolvingTradesWBalance': '# Revolving Trades with Balance',
+            'NumBank2NatlTradesWHighUtilization': '# Bank/Natl Trades with high utilization ratio',
             'PercentTradesWBalance': '% Trades with Balance',
             'delinquent': 'Delinquent',
             'inquiry': 'Inquiry',
-        }
+        },
+        # For these we’ll default to identity mapping below
+        # 'Credit', 'Mimic2', 'Correlated_linear', 'Correlated_nonlinear', ...
     }
 
-    if dataset_name in ['Credit', 'Mimic2', 'Correlated_linear', 'Correlated_nonlinear']:
+    # Default COL_NAMES for datasets without a custom mapping ---
+    # This covers Credit, Mimic2, correlated datasets, and all OpenML_* datasets,earlier we had explicti mention of few dataset name like Mimic2
+    if dataset_name not in COL_NAMES:
         COL_NAMES[dataset_name] = {x: x for x in column_names}
 
+    # --- Default FEATURE_LABEL_MAPPING for datasets without a custom mapping ---
+    if dataset_name not in FEATURE_LABEL_MAPPING:
+        FEATURE_LABEL_MAPPING[dataset_name] = {}
+
+    # --- Categorical_names: where do we draw step plots & use tick labels? ---
     if dataset_name in ['Housing', 'Credit', 'Correlated_linear', 'Correlated_nonlinear']:
         categorical_names = []
     elif dataset_name == 'Mimic2':
-        categorical_names = ['AIDS','AdmissionType','GCS','Lymphoma','Temperature','MetastaticCancer','Renal']
+        categorical_names = [
+            'AIDS', 'AdmissionType', 'GCS', 'Lymphoma',
+            'Temperature', 'MetastaticCancer', 'Renal'
+        ]
     elif dataset_name == 'Recidivism':
-        categorical_names = ['race','sex','c_charge_degree']
+        categorical_names = ['race', 'sex', 'c_charge_degree']
     elif dataset_name == 'Fico':
-        categorical_names = ['delinquent','inquiry','MaxDelqEver','MaxDelq2PublicRecLast12M']
+        categorical_names = ['delinquent', 'inquiry', 'MaxDelqEver', 'MaxDelq2PublicRecLast12M']
     else:
-        raise ValueError(f"{dataset_name} not found!")
+        # For all OpenML_* and any other new datasets:
+        # we treat everything as "continuous" for plotting purposes.
+        categorical_names = []
 
     return COL_NAMES, FEATURE_LABEL_MAPPING, categorical_names
+
 
 
 
