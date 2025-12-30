@@ -8,7 +8,7 @@
   },
   "fixed_hp": {
     "training_epochs": 1000,
-    "dataset_name": "Correlated_linear",
+    "dataset_name": "Correlated_nonlinear",
 
     "correlated_n": 20000,
     "correlated_rho": 0.6,
@@ -16,7 +16,7 @@
 
     "num_basis_functions": 128,
     "activation": "relu",
-    "shallow": true,
+    "shallow": false,
     "regression": true,
     "debug": true,
     "use_dnn": false,

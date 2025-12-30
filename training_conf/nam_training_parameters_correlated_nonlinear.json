@@ -1,8 +1,8 @@
 {
-  "dataset_name": "Correlated_linear",
+  "dataset_name": "Correlated_nonlinear",
   "regression": true,
   "activation": "relu",
-  "shallow": true,
+  "shallow": false,
   "num_basis_functions": 128,
   "training_epochs": 1000,
   "early_stopping_epochs": 60,
@@ -28,3 +28,4 @@
   "hp_random_state": 42,
   "logdir": null
 }
+
