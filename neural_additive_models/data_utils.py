@@ -506,9 +506,6 @@ def load_dataset(dataset_name,
         n=20000 if correlated_n is None else int(correlated_n),
         rho=0.95 if correlated_rho is None else float(correlated_rho),
         seed=0 if correlated_seed is None else int(correlated_seed))
-  elif dataset_name in OPENML_SMALL_REGRESSION:
-    dataset = load_openml_regression(dataset_name)
-  
   else:
     raise ValueError('{} not found!'.format(dataset_name))
 
@@ -597,7 +594,6 @@ def get_train_val_test_split(
     (x_val, y_val): Validation data split (for hyperparameter tuning).
     (x_test, y_test): Test data split (held out for final evaluation).
   """
-  from sklearn.model_selection import train_test_split
 
   # First split: separate test set
   # For classification, check if we can stratify (y should be integer-like)
