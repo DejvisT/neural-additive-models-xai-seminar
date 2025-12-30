@@ -33,23 +33,37 @@ def load_hp_tuning_conf(conf_path):
     return hp_search_space, fixed_hp
 
 
-def sample_hyperparameters(hp_search_space, random_seed):
+def sample_hyperparameters(hp_search_space, random_seed=None):
     """Sample hyperparameters from the search space.
     
     Handles both discrete sets (lists) and continuous intervals (tuples).
+    
+    Args:
+        hp_search_space: Dictionary of hyperparameter search spaces
+        random_seed: Optional seed. If None, uses current random state.
+                    If provided, creates a new random state for this sample.
     """
-    random.seed(random_seed)
-    np.random.seed(random_seed)
+    # Create a separate random state to avoid affecting global state
+    if random_seed is not None:
+        rng = random.Random(random_seed)
+        np_rng = np.random.RandomState(random_seed)
+    else:
+        rng = random
+        np_rng = np.random
 
     hp_config = {}
     for key, values in hp_search_space.items():
         if isinstance(values, tuple):
             # Continuous interval: sample uniformly from [min, max)
             min_val, max_val = values
-            hp_config[key] = random.uniform(min_val, max_val)
+            hp_config[key] = rng.uniform(min_val, max_val)
         else:
             # Discrete set: choose randomly
-            hp_config[key] = random.choice(values)
+            # Use random.choice for list, or np_rng.choice for numpy arrays
+            if isinstance(values, list):
+                hp_config[key] = rng.choice(values)
+            else:
+                hp_config[key] = np_rng.choice(values)
     return hp_config
 
 
@@ -178,6 +192,8 @@ def extract_validation_score_for_split(logdir, fixed_hp, split_num, hyperparamet
     hp = dict(hyperparameters or {})
     hp['activation'] = fixed_hp['activation']
     hp['shallow'] = fixed_hp['shallow']
+    hp['dropout'] = float(hp.get('dropout', 0.0))
+    hp['feature_dropout'] = float(hp.get('feature_dropout', 0.0))
 
     nam, sess = load_nam_checkpoint(checkpoint_dir, hyperparameters=hp)
 
