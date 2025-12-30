@@ -94,6 +94,9 @@ flags.DEFINE_float('val_size', 0.2,
                    'Proportion of remaining data for validation set (only used in hyperparameter_tuning mode).')
 flags.DEFINE_integer('hp_random_state', 42,
                      'Random seed for data splitting in hyperparameter tuning mode.')
+flags.DEFINE_boolean('combine_train_val_for_final_training', False,
+                     'If True and hyperparameter_tuning=True, combine train+val sets for final training. '
+                     'This allows training on full train+val while keeping the same test set from HP tuning.')
 flags.DEFINE_integer('early_stopping_epochs', 60, 'Early stopping epochs')
 flags.DEFINE_integer(
     'n_folds', 5, 'Number of folds to use for cross-validation (default: 5)')
@@ -347,8 +350,16 @@ def create_test_train_fold(
             stratified=not FLAGS.regression,
             random_state=FLAGS.hp_random_state)
     
-    tf.logging.info('Train set: %d samples', x_train_all.shape[0])
-    tf.logging.info('Validation set (for HP tuning): %d samples', x_val.shape[0])
+    # If combine_train_val_for_final_training flag is set, combine train+val
+    # This allows training on full train+val while keeping the same test set
+    if hasattr(FLAGS, 'combine_train_val_for_final_training') and \
+       FLAGS.combine_train_val_for_final_training:
+      x_train_all = np.concatenate([x_train_all, x_val], axis=0)
+      y_train_all = np.concatenate([y_train_all, y_val], axis=0)
+      tf.logging.info('Combined train+val for final training: %d samples', x_train_all.shape[0])
+    else:
+      tf.logging.info('Train set: %d samples', x_train_all.shape[0])
+      tf.logging.info('Validation set (for HP tuning): %d samples', x_val.shape[0])
     tf.logging.info('Test set: %d samples', test_dataset[0].shape[0])
   else:
     # Standard mode: use cross-validation
