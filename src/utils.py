@@ -371,13 +371,24 @@ def run_nam_train_sweep(
 
       cmd = build_cmd(params)
       print(f"\n[rho={rho}, seed={seed}]\n{cmd}")
+      
+      # Set PYTHONPATH to include src/ so neural_additive_models can be found
+      project_root = Path(__file__).parent.parent
+      src_path = str(project_root / 'src')
+      env = os.environ.copy()
+      if 'PYTHONPATH' in env:
+        env['PYTHONPATH'] = f"{src_path}{os.pathsep}{env['PYTHONPATH']}"
+      else:
+        env['PYTHONPATH'] = src_path
+      
       t0 = time.time()
       res = subprocess.run(
-          cmd,
-          shell=True,
-          capture_output=True,
-          text=True,
-          timeout=per_run_timeout_s,
+        cmd,
+        shell=True,
+        capture_output=True,
+        text=True,
+        timeout=per_run_timeout_s,
+        env=env,
       )
       dt = time.time() - t0
 

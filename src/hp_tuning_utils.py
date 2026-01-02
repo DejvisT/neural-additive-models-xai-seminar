@@ -120,6 +120,15 @@ def run_trials(fixed_hp, hyperparameters, base_logdir, n_trials, num_splits, tri
                 base_logdir,
             )
 
+            # Set PYTHONPATH to include src/ so neural_additive_models can be found
+            project_root = Path(__file__).parent.parent
+            src_path = str(project_root / 'src')
+            env = os.environ.copy()
+            if 'PYTHONPATH' in env:
+                env['PYTHONPATH'] = f"{src_path}{os.pathsep}{env['PYTHONPATH']}"
+            else:
+                env['PYTHONPATH'] = src_path
+            
             start_time = time.time()
             result = subprocess.run(
                 split_cmd,
@@ -127,6 +136,7 @@ def run_trials(fixed_hp, hyperparameters, base_logdir, n_trials, num_splits, tri
                 capture_output=True,
                 text=True,
                 timeout=per_split_timeout_s,
+                env=env,
             )
             training_time = time.time() - start_time
             success = result.returncode == 0
