@@ -38,6 +38,8 @@ from sklearn.datasets import fetch_california_housing
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OrdinalEncoder
+from sklearn.datasets import fetch_openml
+import openml
 
 gfile = tf.gfile
 
@@ -393,6 +395,109 @@ def load_california_housing_data(
   }
 
 
+def _load_openml_dataset(
+    data_id: int,
+    task_type: str,
+    target_name: str = None,
+    positive_class: str = None,
+):
+  """Generic OpenML loader that returns a NAM-compatible dict.
+
+  Args:
+    data_id: OpenML numeric id.
+    task_type: 'regression' or 'classification'.
+    target_name: Optional; if None, uses ds.target as given by OpenML.
+    positive_class: For binary classification, which label to treat as 1.
+
+  Returns:
+    A dict containing:
+      - 'problem': 'regression' or 'classification'
+      - 'X': pandas.DataFrame with features
+      - 'y': numpy.ndarray with targets (int for classification, float for regression)
+  """
+
+  dataset = fetch_openml(data_id=data_id, as_frame=True)
+
+  # --- features / target ---
+  if target_name is None:
+    if dataset.target is None:
+      raise ValueError(f"Dataset {data_id} has no default target. Specify target_name.")
+    X = dataset.data.copy()
+    y = dataset.target.copy()
+  else:
+    if dataset.frame is None:
+      raise ValueError(f"Dataset {data_id} has no frame. Cannot use target_name.")
+    frame = dataset.frame.copy()
+    if target_name not in frame.columns:
+      raise ValueError(
+          f"target_name '{target_name}' not found in dataset {data_id}. "
+          f"Available columns: {list(frame.columns)}"
+      )
+    y = frame[target_name]
+    X = frame.drop(columns=[target_name])
+
+  # Validate we have data
+  if X.empty:
+    raise ValueError(f"Dataset {data_id} has no features after processing.")
+
+  # --- handle missing values in X ---
+  # 1) numeric columns: fill NaN with column median
+  num_cols = X.select_dtypes(include=["number"]).columns
+  for col in num_cols:
+    s = X[col]
+    if s.isna().any():
+      med = s.median()
+      # If all values are NaN, median will be NaN - use 0 as fallback
+      if pd.isna(med):
+        med = 0.0
+      X[col] = s.fillna(med)
+
+  # 2) categorical / object / bool: fill NaN with most frequent (mode)
+  cat_cols = X.select_dtypes(include=["object", "category", "bool"]).columns
+  for col in cat_cols:
+    s = X[col].astype("object")
+    if s.isna().any():
+      mode = s.mode(dropna=True)
+      fill_val = mode.iloc[0] if not mode.empty else "missing"
+      X[col] = s.fillna(fill_val)
+
+  # --- handle target ---
+  if task_type == "regression":
+    # make sure target is numeric
+    y = pd.to_numeric(y, errors="coerce")
+    mask = ~y.isna()
+    if mask.sum() == 0:
+      raise ValueError(f"Dataset {data_id} has no valid regression targets after conversion.")
+    X = X.loc[mask]
+    y = y.loc[mask]
+    return {"problem": "regression", "X": X, "y": y.values.astype(np.float32)}
+
+  # classification (we assume *binary* for NAM)
+  # Handle missing values in target: drop rows with NaN targets
+  mask = ~y.isna()
+  if mask.sum() == 0:
+    raise ValueError(f"Dataset {data_id} has no valid classification targets after removing missing values.")
+  X = X.loc[mask]
+  y = y.loc[mask]
+  
+  y = y.astype(str)
+  classes = sorted(pd.unique(y))
+  if len(classes) != 2:
+    raise ValueError(
+        f"Dataset {data_id} is not binary (found {len(classes)} classes: {classes}). "
+        "Please choose a different dataset or pre-binarize."
+    )
+  if positive_class is None:
+    positive_class = classes[1]
+  elif positive_class not in classes:
+    raise ValueError(
+        f"positive_class '{positive_class}' not found in dataset {data_id}. "
+        f"Available classes: {classes}"
+    )
+  y_bin = (y == positive_class).astype(int)
+  return {"problem": "classification", "X": X, "y": y_bin.values}
+
+
 class CustomPipeline(Pipeline):
   """Custom sklearn Pipeline to transform data."""
 
@@ -439,7 +544,7 @@ def transform_data(df):
       new_column_names.append(col_name)
   cat_ohe_step = (
       'ohe',
-      OneHotEncoder(sparse=False, handle_unknown='ignore'),
+      OneHotEncoder(sparse_output=False, handle_unknown='ignore'),
   )
 
   cat_pipe = Pipeline([cat_ohe_step])
@@ -476,7 +581,10 @@ def load_dataset(dataset_name,
 
   Raises:
     ValueError: If the `dataset_name` is not in ('Telco', 'BreastCancer',
-    'Adult', 'Credit', 'Heart', 'Mimic2', 'Recidivism', 'Fico', Housing').
+    'Adult', 'Credit', 'Heart', 'Mimic2', 'Recidivism', 'Fico', 'Housing',
+    'OpenML_<id>_<task_type>', 'OpenML-<id>-<task_type>', 'Correlated_linear', 
+    'Correlated_nonlinear'). For OpenML datasets, task_type must be 'classification' 
+    or 'regression'.
   """
   if dataset_name == 'Telco':
     dataset = load_telco_churn_data()
@@ -496,6 +604,22 @@ def load_dataset(dataset_name,
     dataset = load_fico_score_data()
   elif dataset_name == 'Housing':
     dataset = load_california_housing_data()
+  elif dataset_name.startswith('OpenML_'):
+    # Load OpenML dataset by ID (format: OpenML_<dataset_id>_<task_type>)
+    # task_type is required and must be 'classification' or 'regression'
+    parts = dataset_name.split('_')
+    if len(parts) < 3:
+      raise ValueError(
+          f"OpenML dataset name must include task_type: 'OpenML_<id>_<task_type>'. "
+          f"Got: '{dataset_name}'. task_type must be 'classification' or 'regression'."
+      )
+    dataset_id = int(parts[1])
+    task_type = parts[2]
+    if task_type not in ('classification', 'regression'):
+      raise ValueError(
+          f"task_type must be 'classification' or 'regression', got '{task_type}'."
+      )
+    dataset = _load_openml_dataset(data_id=dataset_id, task_type=task_type)
   elif dataset_name == 'Correlated_linear':
     dataset = load_correlated_linear_data(
         n=20000 if correlated_n is None else int(correlated_n),
