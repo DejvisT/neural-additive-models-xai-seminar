@@ -375,11 +375,17 @@ def run_nam_train_sweep(
       # Set PYTHONPATH to include src/ so neural_additive_models can be found
       project_root = Path(__file__).parent.parent
       src_path = str(project_root / 'src')
-      env = os.environ.copy()
-      if 'PYTHONPATH' in env:
-        env['PYTHONPATH'] = f"{src_path}{os.pathsep}{env['PYTHONPATH']}"
+      
+      # Get existing PYTHONPATH if it exists
+      existing_pythonpath = os.environ.get('PYTHONPATH', '')
+      if existing_pythonpath:
+        pythonpath = f"{src_path}{os.pathsep}{existing_pythonpath}"
       else:
-        env['PYTHONPATH'] = src_path
+        pythonpath = src_path
+      
+      # Set environment variable in the subprocess environment
+      env = os.environ.copy()
+      env['PYTHONPATH'] = pythonpath
       
       t0 = time.time()
       res = subprocess.run(
@@ -1195,9 +1201,18 @@ def plot_all_hist(hist_data, num_rows, num_cols, color_base, mean_pred,
             ax.plot(x, avg_curve, color=color_base, linewidth=3)
             ax.tick_params(labelsize='large')
 
-        if y_limits is not None and name in y_limits:
-            feature_ymin, feature_ymax = y_limits[name]
-            ax.set_ylim(feature_ymin, feature_ymax)
+        # Handle y_limits: can be a tuple (global) or dict (per-feature)
+        if y_limits is not None:
+            if isinstance(y_limits, (tuple, list)) and len(y_limits) == 2:
+                # Global y_limits for all features
+                feature_ymin, feature_ymax = y_limits
+                ax.set_ylim(feature_ymin, feature_ymax)
+            elif isinstance(y_limits, dict) and name in y_limits:
+                # Per-feature y_limits
+                feature_ymin, feature_ymax = y_limits[name]
+                ax.set_ylim(feature_ymin, feature_ymax)
+            else:
+                ax.set_ylim(ymin, ymax)
         else:
             ax.set_ylim(ymin, ymax)
 
@@ -1262,8 +1277,16 @@ def shade_by_density_blocks(hist_data, unique_features, single_features,
             min_x = min_x_orig
             max_x = max_x_orig
         
-        if y_limits is not None and name in y_limits:
-            feature_ymin, feature_ymax = y_limits[name]
+        # Handle y_limits: can be a tuple (global) or dict (per-feature)
+        if y_limits is not None:
+            if isinstance(y_limits, (tuple, list)) and len(y_limits) == 2:
+                # Global y_limits for all features
+                feature_ymin, feature_ymax = y_limits
+            elif isinstance(y_limits, dict) and name in y_limits:
+                # Per-feature y_limits
+                feature_ymin, feature_ymax = y_limits[name]
+            else:
+                feature_ymin, feature_ymax = ymin, ymax
         else:
             feature_ymin, feature_ymax = ymin, ymax
 
@@ -1392,4 +1415,351 @@ def plot_nam_contributions_with_density(
 
     if return_limits:
         return fig, (ymin, ymax)
+    return fig
+
+
+def gather_ebm_predictions_and_shape_functions(
+    fold_test_indices,
+    data_x,
+    data_y,
+    column_names,
+    dataset_name,
+    best_hp,
+    fixed_hp,
+    is_regression=True,
+    num_folds=5,
+    num_splits=20,
+    print_every=5,
+    base_logdir=None,
+):
+    """
+    Gather EBM predictions and shape functions across folds and splits.
+    
+    Args:
+        fold_test_indices: List of test indices for each fold
+        data_x: Full dataset features
+        data_y: Full dataset targets
+        column_names: List of feature names
+        dataset_name: Name of the dataset
+        best_hp: Best hyperparameters dict
+        fixed_hp: Fixed hyperparameters dict
+        is_regression: Whether this is a regression task
+        num_folds: Number of folds
+        num_splits: Number of splits per fold
+        print_every: Print progress every N splits
+        base_logdir: Base directory for saving/loading models (optional)
+    
+    Returns:
+        all_preds_per_fold: List of lists of predictions [fold][split][samples]
+        all_shape_functions: List of shape function data for plotting
+        all_mean_pred: List of mean predictions per split
+    """
+    from interpret.glassbox import ExplainableBoostingRegressor, ExplainableBoostingClassifier
+    from interpret import show, preserve
+    import pickle
+    import os
+    
+    all_preds_per_fold = [[] for _ in range(num_folds)]
+    all_shape_functions = []
+    all_mean_pred = []
+    
+    for fold in range(1, num_folds + 1):
+        fold_idx = fold - 1
+        test_indices = fold_test_indices[fold_idx]
+        print(f"Processing fold {fold} (test set size: {len(test_indices)})...")
+        
+        # Create fold-specific train/test split
+        train_indices = np.setdiff1d(np.arange(len(data_x)), test_indices)
+        X_train_fold = data_x[train_indices]
+        y_train_fold = data_y[train_indices]
+        X_test_fold = data_x[test_indices]
+        y_test_fold = data_y[test_indices]
+        
+        for split in range(1, num_splits + 1):
+            if split % print_every == 0:
+                print(f"  Processing split {split}...")
+            
+            # Check if model exists
+            model_path = None
+            if base_logdir:
+                model_path = os.path.join(base_logdir, f'fold_{fold}', f'split_{split}', 'ebm_model.pkl')
+                os.makedirs(os.path.dirname(model_path), exist_ok=True)
+            
+            # Load or train model
+            if model_path and os.path.exists(model_path):
+                with open(model_path, 'rb') as f:
+                    model = pickle.load(f)
+            else:
+                # Train new model
+                seed = (fold - 1) * num_splits + split
+                
+                if is_regression:
+                    model = ExplainableBoostingRegressor(
+                        **best_hp,
+                        random_state=seed,
+                        n_jobs=fixed_hp.get('n_jobs', -1),
+                        early_stopping_rounds=fixed_hp.get('early_stopping_rounds', 50),
+                        validation_size=fixed_hp.get('validation_size', 0.2)
+                    )
+                else:
+                    model = ExplainableBoostingClassifier(
+                        **best_hp,
+                        random_state=seed,
+                        n_jobs=fixed_hp.get('n_jobs', -1),
+                        early_stopping_rounds=fixed_hp.get('early_stopping_rounds', 50),
+                        validation_size=fixed_hp.get('validation_size', 0.2)
+                    )
+                
+                # Convert to DataFrame for EBM
+                import pandas as pd
+                X_train_df = pd.DataFrame(X_train_fold, columns=column_names)
+                model.fit(X_train_df, y_train_fold)
+                
+                # Save model if path provided
+                if model_path:
+                    with open(model_path, 'wb') as f:
+                        pickle.dump(model, f)
+            
+            # Get predictions on test set
+            import pandas as pd
+            X_test_df = pd.DataFrame(X_test_fold, columns=column_names)
+            if is_regression:
+                preds_test = model.predict(X_test_df)
+            else:
+                preds_test = model.predict_proba(X_test_df)[:, 1]
+            
+            all_preds_per_fold[fold_idx].append(preds_test)
+            
+            # Extract shape functions using interpretML's API
+            # interpretML provides shape functions through explain_global()
+            global_explanation = model.explain_global()
+            
+            # Store shape function data
+            shape_data = {}
+            
+            # Extract shape functions - interpretML stores them in the model's internal structure
+            # We can access them through the explanation or directly from the model
+            try:
+                # Method 1: Try to get data from explanation object
+                try:
+                    all_data = global_explanation.data()
+                    if isinstance(all_data, dict):
+                        # Extract features from the data dictionary
+                        for feat_name in column_names:
+                            if feat_name in all_data:
+                                feat_info = all_data[feat_name]
+                                if isinstance(feat_info, dict) and 'names' in feat_info and 'scores' in feat_info:
+                                    x_vals = np.array(feat_info['names']).tolist() if feat_info['names'] is not None else []
+                                    y_vals = np.array(feat_info['scores']).tolist() if feat_info['scores'] is not None else []
+                                    if x_vals and y_vals and len(x_vals) == len(y_vals):
+                                        shape_data[feat_name] = {
+                                            'x': x_vals,
+                                            'y': y_vals,
+                                            'type': 'continuous'
+                                        }
+                except:
+                    pass
+                
+                # Method 2: Access shape functions directly from the model
+                # EBM models store shape functions in model.term_features_ and model.term_scores_
+                # Only use this method if Method 1 didn't work
+                if not shape_data and hasattr(model, 'term_features_') and hasattr(model, 'term_scores_'):
+                    # Get feature indices and their corresponding scores
+                    term_features = model.term_features_
+                    term_scores = model.term_scores_
+                    
+                    # Create a mapping from feature index to feature name
+                    for feat_idx, feat_name in enumerate(column_names):
+                        # Find terms that correspond to this feature (single feature terms)
+                        # Single feature terms have length 1
+                        found = False
+                        for term_idx, term_feat in enumerate(term_features):
+                            if len(term_feat) == 1 and term_feat[0] == feat_idx:
+                                # This is a single-feature term for our feature
+                                scores = term_scores[term_idx]
+                                
+                                # Get the bin edges and centers from the model
+                                # EBM stores bin edges in model.bin_edges_
+                                if hasattr(model, 'bin_edges_') and feat_idx < len(model.bin_edges_):
+                                    bin_edges = model.bin_edges_[feat_idx]
+                                    if bin_edges is not None and len(bin_edges) > 0:
+                                        # Use bin centers as x values
+                                        bin_edges = np.array(bin_edges) if not isinstance(bin_edges, np.ndarray) else bin_edges
+                                        scores = np.array(scores) if not isinstance(scores, np.ndarray) else scores
+                                        
+                                        if len(bin_edges) == len(scores) + 1:
+                                            # Bin edges, compute centers
+                                            x_vals = [(bin_edges[i] + bin_edges[i+1]) / 2.0 for i in range(len(bin_edges)-1)]
+                                        elif len(bin_edges) == len(scores):
+                                            # Already centers
+                                            x_vals = bin_edges.tolist()
+                                        else:
+                                            # Fallback: use indices
+                                            x_vals = list(range(len(scores)))
+                                        
+                                        y_vals = scores.tolist()
+                                        
+                                        if x_vals and y_vals and len(x_vals) == len(y_vals):
+                                            shape_data[feat_name] = {
+                                                'x': x_vals,
+                                                'y': y_vals,
+                                                'type': 'continuous'
+                                            }
+                                            found = True
+                                            break
+                                elif hasattr(model, 'feature_bounds_') and feat_idx < len(model.feature_bounds_):
+                                    # Alternative: use feature bounds to create x values
+                                    bounds = model.feature_bounds_[feat_idx]
+                                    if bounds is not None and len(bounds) == 2:
+                                        # Create evenly spaced x values
+                                        x_vals = np.linspace(bounds[0], bounds[1], len(scores)).tolist()
+                                        y_vals = np.array(scores).tolist() if not isinstance(scores, np.ndarray) else scores.tolist()
+                                        if x_vals and y_vals and len(x_vals) == len(y_vals):
+                                            shape_data[feat_name] = {
+                                                'x': x_vals,
+                                                'y': y_vals,
+                                                'type': 'continuous'
+                                            }
+                                            found = True
+                                            break
+                        
+                        # If still not found, create x values from data range
+                        if not found and feat_idx < data_x.shape[1]:
+                            # Use the actual data range for this feature
+                            feat_data = data_x[:, feat_idx]
+                            x_min, x_max = float(np.min(feat_data)), float(np.max(feat_data))
+                            scores = None
+                            for term_idx, term_feat in enumerate(term_features):
+                                if len(term_feat) == 1 and term_feat[0] == feat_idx:
+                                    scores = term_scores[term_idx]
+                                    break
+                            
+                            if scores is not None:
+                                scores = np.array(scores) if not isinstance(scores, np.ndarray) else scores
+                                x_vals = np.linspace(x_min, x_max, len(scores)).tolist()
+                                y_vals = scores.tolist()
+                                if x_vals and y_vals and len(x_vals) == len(y_vals):
+                                    shape_data[feat_name] = {
+                                        'x': x_vals,
+                                        'y': y_vals,
+                                        'type': 'continuous'
+                                    }
+                
+                # Method 3: Try accessing through explanation's internal structure
+                if not shape_data:
+                    try:
+                        # Try to get feature names and their data
+                        for feat_name in column_names:
+                            try:
+                                feat_data = global_explanation.data(feat_name)
+                                if isinstance(feat_data, dict):
+                                    if 'names' in feat_data and 'scores' in feat_data:
+                                        x_vals = np.array(feat_data['names']).tolist() if feat_data['names'] is not None else []
+                                        y_vals = np.array(feat_data['scores']).tolist() if feat_data['scores'] is not None else []
+                                        if x_vals and y_vals and len(x_vals) == len(y_vals):
+                                            shape_data[feat_name] = {
+                                                'x': x_vals,
+                                                'y': y_vals,
+                                                'type': 'continuous'
+                                            }
+                            except:
+                                pass
+                    except:
+                        pass
+                        
+            except Exception as e:
+                # If extraction fails, shape_data will be empty
+                if split % print_every == 0:
+                    print(f"    Warning: Could not extract shape functions: {type(e).__name__}: {str(e)[:100]}")
+                pass
+            
+            all_shape_functions.append(shape_data)
+            
+            # Compute mean prediction
+            if is_regression:
+                mean_pred = float(preds_test.mean())
+            else:
+                mean_pred = float(preds_test.mean())
+            all_mean_pred.append(mean_pred)
+    
+    return all_preds_per_fold, all_shape_functions, all_mean_pred
+
+
+def plot_ebm_shape_functions(
+    column_names,
+    all_shape_functions,
+    y_limits=(-0.1, 0.1),
+    n_cols=4,
+    figsize_scale=4.0
+):
+    """
+    Plot average EBM shape functions across all splits.
+    
+    Args:
+        column_names: List of feature names
+        all_shape_functions: List of dictionaries, each containing shape function data
+                           for each split. Each dict should have format:
+                           {feature_name: {'x': [...], 'y': [...], 'type': 'continuous'}}
+        y_limits: Tuple of (ymin, ymax) for y-axis limits. Default is (-0.1, 0.1).
+        n_cols: Number of columns in the subplot grid. Default is 4.
+        figsize_scale: Scaling factor for figure size. Default is 4.0.
+    
+    Returns:
+        fig: matplotlib figure object
+    """
+    n_features = len(column_names)
+    n_rows = (n_features + n_cols - 1) // n_cols
+    
+    fig, axes = plt.subplots(n_rows, n_cols, figsize=(n_cols * figsize_scale, n_rows * figsize_scale))
+    axes = axes.flatten() if n_features > 1 else [axes]
+    
+    for i, feat_name in enumerate(column_names):
+        ax = axes[i]
+        
+        # Collect shape function data across all splits
+        all_x = []
+        all_y = []
+        
+        for shape_data in all_shape_functions:
+            if feat_name in shape_data:
+                feat_data = shape_data[feat_name]
+                if 'x' in feat_data and 'y' in feat_data:
+                    all_x.append(feat_data['x'])
+                    all_y.append(feat_data['y'])
+        
+        if all_x and all_y:
+            # Average across splits
+            # Find common x values
+            if len(all_x) > 0:
+                # For continuous features, use the first split's x values
+                x_vals = np.array(all_x[0])
+                y_vals = []
+                
+                for x_arr, y_arr in zip(all_x, all_y):
+                    x_arr = np.array(x_arr)
+                    y_arr = np.array(y_arr)
+                    # Interpolate to common x values
+                    if len(x_arr) == len(x_vals):
+                        y_vals.append(y_arr)
+                
+                if y_vals:
+                    y_mean = np.mean(y_vals, axis=0)
+                    y_std = np.std(y_vals, axis=0)
+                    
+                    ax.plot(x_vals, y_mean, 'b-', linewidth=2, label='Mean')
+                    ax.fill_between(x_vals, y_mean - y_std, y_mean + y_std, alpha=0.3, color='blue')
+                    ax.axhline(y=0, color='k', linestyle='--', linewidth=1)
+                    ax.set_xlabel(feat_name)
+                    ax.set_ylabel('Contribution')
+                    ax.set_title(feat_name)
+                    ax.set_ylim(y_limits[0], y_limits[1])
+                    ax.grid(True, alpha=0.3)
+    
+    # Hide unused subplots
+    for i in range(n_features, len(axes)):
+        axes[i].set_visible(False)
+    
+    plt.tight_layout()
+    plt.show()
+    
     return fig

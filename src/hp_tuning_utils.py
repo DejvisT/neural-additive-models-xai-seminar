@@ -123,11 +123,17 @@ def run_trials(fixed_hp, hyperparameters, base_logdir, n_trials, num_splits, tri
             # Set PYTHONPATH to include src/ so neural_additive_models can be found
             project_root = Path(__file__).parent.parent
             src_path = str(project_root / 'src')
-            env = os.environ.copy()
-            if 'PYTHONPATH' in env:
-                env['PYTHONPATH'] = f"{src_path}{os.pathsep}{env['PYTHONPATH']}"
+            
+            # Get existing PYTHONPATH if it exists
+            existing_pythonpath = os.environ.get('PYTHONPATH', '')
+            if existing_pythonpath:
+                pythonpath = f"{src_path}{os.pathsep}{existing_pythonpath}"
             else:
-                env['PYTHONPATH'] = src_path
+                pythonpath = src_path
+            
+            # Set environment variable in the subprocess environment
+            env = os.environ.copy()
+            env['PYTHONPATH'] = pythonpath
             
             start_time = time.time()
             result = subprocess.run(
