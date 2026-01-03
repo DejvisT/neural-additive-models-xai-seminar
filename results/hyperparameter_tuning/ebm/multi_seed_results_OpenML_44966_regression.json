@@ -1,0 +1,122 @@
+[
+  {
+    "seed": 1,
+    "test_score": 0.8109144775774765,
+    "training_time": 0.6220245361328125,
+    "success": true
+  },
+  {
+    "seed": 2,
+    "test_score": 0.8026734877634615,
+    "training_time": 0.41254234313964844,
+    "success": true
+  },
+  {
+    "seed": 3,
+    "test_score": 0.8425276825542314,
+    "training_time": 0.5208272933959961,
+    "success": true
+  },
+  {
+    "seed": 4,
+    "test_score": 0.8192044720004698,
+    "training_time": 0.41474437713623047,
+    "success": true
+  },
+  {
+    "seed": 5,
+    "test_score": 0.8065338060886,
+    "training_time": 0.3992459774017334,
+    "success": true
+  },
+  {
+    "seed": 6,
+    "test_score": 0.8171667595324826,
+    "training_time": 0.39099693298339844,
+    "success": true
+  },
+  {
+    "seed": 7,
+    "test_score": 0.8105256056742058,
+    "training_time": 0.40735936164855957,
+    "success": true
+  },
+  {
+    "seed": 8,
+    "test_score": 0.8056830198938136,
+    "training_time": 0.39383697509765625,
+    "success": true
+  },
+  {
+    "seed": 9,
+    "test_score": 0.8048420679814978,
+    "training_time": 0.40752363204956055,
+    "success": true
+  },
+  {
+    "seed": 10,
+    "test_score": 0.8216141385477693,
+    "training_time": 0.3937065601348877,
+    "success": true
+  },
+  {
+    "seed": 11,
+    "test_score": 0.8157177285943279,
+    "training_time": 0.39276623725891113,
+    "success": true
+  },
+  {
+    "seed": 12,
+    "test_score": 0.8099857029909185,
+    "training_time": 0.40922999382019043,
+    "success": true
+  },
+  {
+    "seed": 13,
+    "test_score": 0.8029557324734714,
+    "training_time": 0.39885544776916504,
+    "success": true
+  },
+  {
+    "seed": 14,
+    "test_score": 0.804962247920108,
+    "training_time": 0.3973715305328369,
+    "success": true
+  },
+  {
+    "seed": 15,
+    "test_score": 0.8096564729353546,
+    "training_time": 0.39544034004211426,
+    "success": true
+  },
+  {
+    "seed": 16,
+    "test_score": 0.8021828930806666,
+    "training_time": 0.3904867172241211,
+    "success": true
+  },
+  {
+    "seed": 17,
+    "test_score": 0.8341763135210868,
+    "training_time": 0.410020112991333,
+    "success": true
+  },
+  {
+    "seed": 18,
+    "test_score": 0.8118363993409244,
+    "training_time": 0.38987040519714355,
+    "success": true
+  },
+  {
+    "seed": 19,
+    "test_score": 0.8087755096277686,
+    "training_time": 0.3879969120025635,
+    "success": true
+  },
+  {
+    "seed": 20,
+    "test_score": 0.8202381763048208,
+    "training_time": 0.3944518566131592,
+    "success": true
+  }
+]

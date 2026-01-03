@@ -1476,8 +1476,10 @@ def gather_ebm_predictions_and_shape_functions(
         y_test_fold = data_y[test_indices]
         
         for split in range(1, num_splits + 1):
-            if split % print_every == 0:
-                print(f"  Processing split {split}...")
+            should_print = (split % print_every == 0) or (split == 1) or (split == num_splits)
+            
+            if should_print:
+                print(f"  Processing split {split}/{num_splits}...", end=' ', flush=True)
             
             # Check if model exists
             model_path = None
@@ -1489,6 +1491,8 @@ def gather_ebm_predictions_and_shape_functions(
             if model_path and os.path.exists(model_path):
                 with open(model_path, 'rb') as f:
                     model = pickle.load(f)
+                if should_print:
+                    print("(loaded)", flush=True)
             else:
                 # Train new model
                 seed = (fold - 1) * num_splits + split
@@ -1519,6 +1523,9 @@ def gather_ebm_predictions_and_shape_functions(
                 if model_path:
                     with open(model_path, 'wb') as f:
                         pickle.dump(model, f)
+                
+                if should_print:
+                    print("(trained)", flush=True)
             
             # Get predictions on test set
             import pandas as pd
