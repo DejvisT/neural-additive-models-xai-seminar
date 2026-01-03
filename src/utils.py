@@ -1770,3 +1770,142 @@ def plot_ebm_shape_functions(
     plt.show()
     
     return fig
+
+
+def save_performance_metrics(
+    all_preds_per_fold,
+    fold_test_indices,
+    data_y,
+    dataset_id,
+    dataset_name,
+    task_type,
+    model_type,
+    num_folds,
+    num_splits,
+    is_regression,
+    project_root,
+    verbose=True
+):
+    """
+    Save detailed performance metrics for statistical analysis.
+    
+    Args:
+        all_preds_per_fold: List of lists of predictions [fold][split][samples]
+        fold_test_indices: List of test indices for each fold
+        data_y: Full dataset targets
+        dataset_id: OpenML dataset ID
+        dataset_name: Dataset name string
+        task_type: "classification" or "regression"
+        model_type: "NAM" or "EBM"
+        num_folds: Number of folds
+        num_splits: Number of splits per fold
+        is_regression: Whether this is a regression task
+        project_root: Path to project root directory
+        verbose: Whether to print summary
+    
+    Returns:
+        Path to saved JSON file
+    """
+    import json
+    from pathlib import Path
+    from sklearn.metrics import mean_squared_error, mean_absolute_error, roc_auc_score
+    import numpy as np
+    
+    # Compute additional metrics per fold
+    detailed_metrics = {
+        'dataset_id': dataset_id,
+        'dataset_name': dataset_name,
+        'task_type': task_type,
+        'model_type': model_type,
+        'num_folds': num_folds,
+        'num_splits': num_splits,
+        'folds': []
+    }
+    
+    for fold_idx in range(num_folds):
+        test_indices = fold_test_indices[fold_idx]
+        y_test_fold = data_y[test_indices]
+        
+        # Ensemble predictions (mean across splits)
+        fold_preds = np.array(all_preds_per_fold[fold_idx])
+        ensemble_pred = np.mean(fold_preds, axis=0)
+        
+        # Compute metrics
+        if is_regression:
+            rmse = np.sqrt(mean_squared_error(y_test_fold, ensemble_pred))
+            mae = mean_absolute_error(y_test_fold, ensemble_pred)
+            fold_data = {
+                'fold': fold_idx + 1,
+                'test_set_size': len(test_indices),
+                'rmse': float(rmse),
+                'mae': float(mae),
+                'metric_name': 'RMSE',
+                'metric_value': float(rmse)
+            }
+        else:
+            auc = roc_auc_score(y_test_fold, ensemble_pred)
+            fold_data = {
+                'fold': fold_idx + 1,
+                'test_set_size': len(test_indices),
+                'auc': float(auc),
+                'metric_name': 'AUC',
+                'metric_value': float(auc)
+            }
+        
+        # Add per-split metrics (individual model performance)
+        split_metrics = []
+        for split_idx in range(num_splits):
+            split_pred = fold_preds[split_idx]
+            if is_regression:
+                split_rmse = np.sqrt(mean_squared_error(y_test_fold, split_pred))
+                split_mae = mean_absolute_error(y_test_fold, split_pred)
+                split_metrics.append({
+                    'split': split_idx + 1,
+                    'rmse': float(split_rmse),
+                    'mae': float(split_mae)
+                })
+            else:
+                split_auc = roc_auc_score(y_test_fold, split_pred)
+                split_metrics.append({
+                    'split': split_idx + 1,
+                    'auc': float(split_auc)
+                })
+        
+        fold_data['per_split_metrics'] = split_metrics
+        detailed_metrics['folds'].append(fold_data)
+    
+    # Add summary statistics
+    fold_metrics_array = np.array([f['metric_value'] for f in detailed_metrics['folds']])
+    avg_metric_value = np.mean(fold_metrics_array)
+    std_metric_value = np.std(fold_metrics_array)
+    metric_name = detailed_metrics['folds'][0]['metric_name']
+    
+    detailed_metrics['summary'] = {
+        'mean_metric': float(avg_metric_value),
+        'std_metric': float(std_metric_value),
+        'min_metric': float(np.min(fold_metrics_array)),
+        'max_metric': float(np.max(fold_metrics_array)),
+        'metric_name': metric_name
+    }
+    
+    # Save to file
+    results_dir = Path(project_root) / 'results' / 'evaluation'
+    results_dir.mkdir(parents=True, exist_ok=True)
+    output_file = results_dir / f'{model_type.lower()}_{dataset_name.replace("/", "_").replace(":", "_")}_performance.json'
+    
+    with open(output_file, 'w') as f:
+        json.dump(detailed_metrics, f, indent=2)
+    
+    if verbose:
+        print(f"\n{'='*70}")
+        print("PERFORMANCE METRICS SAVED")
+        print(f"{'='*70}")
+        print(f"Saved to: {output_file}")
+        print(f"Summary:")
+        print(f"  Mean {metric_name}: {avg_metric_value:.4f}")
+        print(f"  Std {metric_name}: {std_metric_value:.4f}")
+        print(f"  Min {metric_name}: {detailed_metrics['summary']['min_metric']:.4f}")
+        print(f"  Max {metric_name}: {detailed_metrics['summary']['max_metric']:.4f}")
+        print(f"{'='*70}")
+    
+    return output_file
