@@ -10,7 +10,7 @@
   "units_multiplier": 2,
   "decay_rate": 0.995,
   "tf_seed": 1,
-  "debug": true,
+  "debug": false,
   "use_dnn": false,
   "n_models": 1,
   "max_checkpoints_to_keep": 1,

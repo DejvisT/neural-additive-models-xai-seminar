@@ -14,7 +14,7 @@
     "activation": "relu",
     "shallow": false,
     "regression": false,
-    "debug": true,
+    "debug": false,
     "use_dnn": false,
     "max_checkpoints_to_keep": 1,
     "save_checkpoint_every_n_epochs": 10,

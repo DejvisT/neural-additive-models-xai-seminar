@@ -21,7 +21,7 @@
   "fold_num": 1,
   "activation": "relu",
   "regression": false,
-  "debug": true,
+  "debug": false,
   "shallow": false,
   "use_dnn": false,
   "early_stopping_epochs": 60
