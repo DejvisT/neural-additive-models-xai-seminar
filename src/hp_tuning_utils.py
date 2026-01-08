@@ -3,6 +3,7 @@ import os
 import random
 import subprocess
 import time
+import shlex
 from pathlib import Path
 import numpy as np
 import pandas as pd
@@ -69,7 +70,9 @@ def sample_hyperparameters(hp_search_space, random_seed=None):
 
 def generate_training_command(fixed_hp, hyperparameters, trial_num, data_split, base_logdir):
     """Generate a training command string from hyperparameters."""
-    logdir = os.path.join(base_logdir, f'trial_{trial_num}')
+    # Convert to absolute path to avoid path resolution issues
+    base_logdir = Path(base_logdir).resolve()
+    logdir = str(base_logdir / f'trial_{trial_num}')
 
     all_hp = {**fixed_hp, **hyperparameters}
     all_hp['logdir'] = logdir
@@ -85,7 +88,20 @@ def generate_training_command(fixed_hp, hyperparameters, trial_num, data_split, 
         elif isinstance(value, bool):
             arg = f'--{key}={"true" if value else "false"}'
         else:
-            arg = f'--{key}={value}'
+            # Properly quote values that contain spaces or special characters
+            value_str = str(value)
+            # On Windows, use double quotes; on Unix, shlex.quote handles it
+            # Check if value contains spaces or special characters that need quoting
+            if ' ' in value_str or ('\\' in value_str and os.name == 'nt'):
+                # Windows: use double quotes and escape any existing double quotes
+                if os.name == 'nt':  # Windows
+                    escaped_value = value_str.replace('"', '\\"')
+                    arg = f'--{key}="{escaped_value}"'
+                else:  # Unix/Linux/Mac
+                    quoted_value = shlex.quote(value_str)
+                    arg = f'--{key}={quoted_value}'
+            else:
+                arg = f'--{key}={value_str}'
 
         cmd.append(arg)
 
@@ -135,6 +151,9 @@ def run_trials(fixed_hp, hyperparameters, base_logdir, n_trials, num_splits, tri
             env = os.environ.copy()
             env['PYTHONPATH'] = pythonpath
             
+            # Set working directory to project root to ensure consistent path resolution
+            cwd = str(project_root)
+            
             start_time = time.time()
             result = subprocess.run(
                 split_cmd,
@@ -143,6 +162,7 @@ def run_trials(fixed_hp, hyperparameters, base_logdir, n_trials, num_splits, tri
                 text=True,
                 timeout=per_split_timeout_s,
                 env=env,
+                cwd=cwd,
             )
             training_time = time.time() - start_time
             success = result.returncode == 0
