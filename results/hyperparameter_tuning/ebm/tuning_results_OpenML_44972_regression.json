@@ -1,0 +1,802 @@
+[
+  {
+    "trial": 1,
+    "hyperparameters": {
+      "learning_rate": 0.03807947176588889,
+      "max_bins": 256,
+      "max_interaction_bins": 32,
+      "interactions": 15,
+      "outer_bags": 16,
+      "inner_bags": 2,
+      "min_samples_leaf": 3,
+      "max_leaves": 5
+    },
+    "validation_score": 0.6120735770274344,
+    "training_time": 7.518247604370117,
+    "success": true
+  },
+  {
+    "trial": 2,
+    "hyperparameters": {
+      "learning_rate": 0.012390402072588118,
+      "max_bins": 32,
+      "max_interaction_bins": 32,
+      "interactions": 0,
+      "outer_bags": 8,
+      "inner_bags": 2,
+      "min_samples_leaf": 5,
+      "max_leaves": 10
+    },
+    "validation_score": 0.6264344333901144,
+    "training_time": 0.39467811584472656,
+    "success": true
+  },
+  {
+    "trial": 3,
+    "hyperparameters": {
+      "learning_rate": 0.0836493727178993,
+      "max_bins": 32,
+      "max_interaction_bins": 64,
+      "interactions": 10,
+      "outer_bags": 1,
+      "inner_bags": 16,
+      "min_samples_leaf": 5,
+      "max_leaves": 5
+    },
+    "validation_score": 0.6193020878900378,
+    "training_time": 11.520932912826538,
+    "success": true
+  },
+  {
+    "trial": 4,
+    "hyperparameters": {
+      "learning_rate": 0.09891213983408442,
+      "max_bins": 128,
+      "max_interaction_bins": 128,
+      "interactions": 0,
+      "outer_bags": 8,
+      "inner_bags": 16,
+      "min_samples_leaf": 2,
+      "max_leaves": 2
+    },
+    "validation_score": 0.6265736251045146,
+    "training_time": 0.7692050933837891,
+    "success": true
+  },
+  {
+    "trial": 5,
+    "hyperparameters": {
+      "learning_rate": 0.07859940272976931,
+      "max_bins": 16,
+      "max_interaction_bins": 128,
+      "interactions": 5,
+      "outer_bags": 8,
+      "inner_bags": 4,
+      "min_samples_leaf": 5,
+      "max_leaves": 20
+    },
+    "validation_score": 0.6139840254381558,
+    "training_time": 8.67911410331726,
+    "success": true
+  },
+  {
+    "trial": 6,
+    "hyperparameters": {
+      "learning_rate": 0.012235358717471303,
+      "max_bins": 16,
+      "max_interaction_bins": 8,
+      "interactions": 10,
+      "outer_bags": 1,
+      "inner_bags": 8,
+      "min_samples_leaf": 1,
+      "max_leaves": 20
+    },
+    "validation_score": 0.6256685322851044,
+    "training_time": 0.7094604969024658,
+    "success": true
+  },
+  {
+    "trial": 7,
+    "hyperparameters": {
+      "learning_rate": 0.0027315368221841104,
+      "max_bins": 32,
+      "max_interaction_bins": 128,
+      "interactions": 10,
+      "outer_bags": 1,
+      "inner_bags": 0,
+      "min_samples_leaf": 3,
+      "max_leaves": 15
+    },
+    "validation_score": 0.5964678216487109,
+    "training_time": 2.3658084869384766,
+    "success": true
+  },
+  {
+    "trial": 8,
+    "hyperparameters": {
+      "learning_rate": 0.030795481129735545,
+      "max_bins": 16,
+      "max_interaction_bins": 128,
+      "interactions": 5,
+      "outer_bags": 16,
+      "inner_bags": 16,
+      "min_samples_leaf": 2,
+      "max_leaves": 5
+    },
+    "validation_score": 0.6258525455820755,
+    "training_time": 78.5536937713623,
+    "success": true
+  },
+  {
+    "trial": 9,
+    "hyperparameters": {
+      "learning_rate": 0.04996556290826413,
+      "max_bins": 128,
+      "max_interaction_bins": 16,
+      "interactions": 15,
+      "outer_bags": 4,
+      "inner_bags": 4,
+      "min_samples_leaf": 10,
+      "max_leaves": 10
+    },
+    "validation_score": 0.6077078989337613,
+    "training_time": 0.968203067779541,
+    "success": true
+  },
+  {
+    "trial": 10,
+    "hyperparameters": {
+      "learning_rate": 0.06789741013485168,
+      "max_bins": 512,
+      "max_interaction_bins": 8,
+      "interactions": 2,
+      "outer_bags": 1,
+      "inner_bags": 16,
+      "min_samples_leaf": 2,
+      "max_leaves": 20
+    },
+    "validation_score": 0.6312095987195896,
+    "training_time": 0.6756670475006104,
+    "success": true
+  },
+  {
+    "trial": 11,
+    "hyperparameters": {
+      "learning_rate": 0.0824879237302694,
+      "max_bins": 128,
+      "max_interaction_bins": 128,
+      "interactions": 0,
+      "outer_bags": 4,
+      "inner_bags": 8,
+      "min_samples_leaf": 5,
+      "max_leaves": 5
+    },
+    "validation_score": 0.6314400259572548,
+    "training_time": 0.38475489616394043,
+    "success": true
+  },
+  {
+    "trial": 12,
+    "hyperparameters": {
+      "learning_rate": 0.08481957831380325,
+      "max_bins": 512,
+      "max_interaction_bins": 64,
+      "interactions": 20,
+      "outer_bags": 16,
+      "inner_bags": 0,
+      "min_samples_leaf": 1,
+      "max_leaves": 5
+    },
+    "validation_score": 0.6011718354624613,
+    "training_time": 9.88999056816101,
+    "success": true
+  },
+  {
+    "trial": 13,
+    "hyperparameters": {
+      "learning_rate": 0.04259811374693662,
+      "max_bins": 64,
+      "max_interaction_bins": 16,
+      "interactions": 0,
+      "outer_bags": 1,
+      "inner_bags": 2,
+      "min_samples_leaf": 2,
+      "max_leaves": 3
+    },
+    "validation_score": 0.6390405185000027,
+    "training_time": 0.1637403964996338,
+    "success": true
+  },
+  {
+    "trial": 14,
+    "hyperparameters": {
+      "learning_rate": 0.010217720380513943,
+      "max_bins": 16,
+      "max_interaction_bins": 64,
+      "interactions": 2,
+      "outer_bags": 1,
+      "inner_bags": 8,
+      "min_samples_leaf": 10,
+      "max_leaves": 2
+    },
+    "validation_score": 0.651530602340011,
+    "training_time": 3.458962917327881,
+    "success": true
+  },
+  {
+    "trial": 15,
+    "hyperparameters": {
+      "learning_rate": 0.0984349932037151,
+      "max_bins": 16,
+      "max_interaction_bins": 32,
+      "interactions": 10,
+      "outer_bags": 4,
+      "inner_bags": 2,
+      "min_samples_leaf": 5,
+      "max_leaves": 15
+    },
+    "validation_score": 0.6230011290484025,
+    "training_time": 0.9867458343505859,
+    "success": true
+  },
+  {
+    "trial": 16,
+    "hyperparameters": {
+      "learning_rate": 0.009647614647315332,
+      "max_bins": 512,
+      "max_interaction_bins": 8,
+      "interactions": 5,
+      "outer_bags": 1,
+      "inner_bags": 0,
+      "min_samples_leaf": 2,
+      "max_leaves": 3
+    },
+    "validation_score": 0.6264454412014508,
+    "training_time": 0.22715497016906738,
+    "success": true
+  },
+  {
+    "trial": 17,
+    "hyperparameters": {
+      "learning_rate": 0.0371454527192467,
+      "max_bins": 32,
+      "max_interaction_bins": 64,
+      "interactions": 15,
+      "outer_bags": 2,
+      "inner_bags": 2,
+      "min_samples_leaf": 3,
+      "max_leaves": 20
+    },
+    "validation_score": 0.5866686620167667,
+    "training_time": 2.78351092338562,
+    "success": true
+  },
+  {
+    "trial": 18,
+    "hyperparameters": {
+      "learning_rate": 0.09247947644186812,
+      "max_bins": 512,
+      "max_interaction_bins": 64,
+      "interactions": 20,
+      "outer_bags": 2,
+      "inner_bags": 0,
+      "min_samples_leaf": 5,
+      "max_leaves": 2
+    },
+    "validation_score": 0.6337784259175907,
+    "training_time": 2.151218891143799,
+    "success": true
+  },
+  {
+    "trial": 19,
+    "hyperparameters": {
+      "learning_rate": 0.030786459674615258,
+      "max_bins": 64,
+      "max_interaction_bins": 64,
+      "interactions": 0,
+      "outer_bags": 2,
+      "inner_bags": 2,
+      "min_samples_leaf": 3,
+      "max_leaves": 3
+    },
+    "validation_score": 0.6380598337764325,
+    "training_time": 0.24454689025878906,
+    "success": true
+  },
+  {
+    "trial": 20,
+    "hyperparameters": {
+      "learning_rate": 0.0826224781154149,
+      "max_bins": 64,
+      "max_interaction_bins": 8,
+      "interactions": 5,
+      "outer_bags": 8,
+      "inner_bags": 4,
+      "min_samples_leaf": 2,
+      "max_leaves": 20
+    },
+    "validation_score": 0.6222683267875434,
+    "training_time": 0.6620614528656006,
+    "success": true
+  },
+  {
+    "trial": 21,
+    "hyperparameters": {
+      "learning_rate": 0.004341716331897625,
+      "max_bins": 32,
+      "max_interaction_bins": 16,
+      "interactions": 10,
+      "outer_bags": 8,
+      "inner_bags": 4,
+      "min_samples_leaf": 2,
+      "max_leaves": 15
+    },
+    "validation_score": 0.6021902971968492,
+    "training_time": 1.8040564060211182,
+    "success": true
+  },
+  {
+    "trial": 22,
+    "hyperparameters": {
+      "learning_rate": 0.055840161227558055,
+      "max_bins": 128,
+      "max_interaction_bins": 32,
+      "interactions": 0,
+      "outer_bags": 2,
+      "inner_bags": 0,
+      "min_samples_leaf": 5,
+      "max_leaves": 5
+    },
+    "validation_score": 0.6278426043356308,
+    "training_time": 0.20871710777282715,
+    "success": true
+  },
+  {
+    "trial": 23,
+    "hyperparameters": {
+      "learning_rate": 0.038530754017943245,
+      "max_bins": 32,
+      "max_interaction_bins": 128,
+      "interactions": 10,
+      "outer_bags": 1,
+      "inner_bags": 0,
+      "min_samples_leaf": 3,
+      "max_leaves": 20
+    },
+    "validation_score": 0.5976914989677475,
+    "training_time": 1.9140691757202148,
+    "success": true
+  },
+  {
+    "trial": 24,
+    "hyperparameters": {
+      "learning_rate": 0.022645859964573398,
+      "max_bins": 16,
+      "max_interaction_bins": 8,
+      "interactions": 20,
+      "outer_bags": 2,
+      "inner_bags": 0,
+      "min_samples_leaf": 2,
+      "max_leaves": 2
+    },
+    "validation_score": 0.6320927611944077,
+    "training_time": 0.298900842666626,
+    "success": true
+  },
+  {
+    "trial": 25,
+    "hyperparameters": {
+      "learning_rate": 0.016274470234996306,
+      "max_bins": 128,
+      "max_interaction_bins": 32,
+      "interactions": 20,
+      "outer_bags": 4,
+      "inner_bags": 8,
+      "min_samples_leaf": 3,
+      "max_leaves": 20
+    },
+    "validation_score": 0.5789484734749092,
+    "training_time": 5.842435121536255,
+    "success": true
+  },
+  {
+    "trial": 26,
+    "hyperparameters": {
+      "learning_rate": 0.05503929156356288,
+      "max_bins": 64,
+      "max_interaction_bins": 16,
+      "interactions": 2,
+      "outer_bags": 8,
+      "inner_bags": 8,
+      "min_samples_leaf": 2,
+      "max_leaves": 20
+    },
+    "validation_score": 0.6297739073368067,
+    "training_time": 0.9797778129577637,
+    "success": true
+  },
+  {
+    "trial": 27,
+    "hyperparameters": {
+      "learning_rate": 0.0266777755248959,
+      "max_bins": 256,
+      "max_interaction_bins": 32,
+      "interactions": 15,
+      "outer_bags": 1,
+      "inner_bags": 16,
+      "min_samples_leaf": 1,
+      "max_leaves": 15
+    },
+    "validation_score": 0.5829873174877114,
+    "training_time": 15.035616159439087,
+    "success": true
+  },
+  {
+    "trial": 28,
+    "hyperparameters": {
+      "learning_rate": 0.030328667005570922,
+      "max_bins": 32,
+      "max_interaction_bins": 64,
+      "interactions": 5,
+      "outer_bags": 16,
+      "inner_bags": 2,
+      "min_samples_leaf": 2,
+      "max_leaves": 2
+    },
+    "validation_score": 0.625817986569099,
+    "training_time": 5.905115604400635,
+    "success": true
+  },
+  {
+    "trial": 29,
+    "hyperparameters": {
+      "learning_rate": 0.09282057332327692,
+      "max_bins": 64,
+      "max_interaction_bins": 8,
+      "interactions": 15,
+      "outer_bags": 8,
+      "inner_bags": 0,
+      "min_samples_leaf": 10,
+      "max_leaves": 20
+    },
+    "validation_score": 0.6260973470079376,
+    "training_time": 0.6068089008331299,
+    "success": true
+  },
+  {
+    "trial": 30,
+    "hyperparameters": {
+      "learning_rate": 0.019371952207035394,
+      "max_bins": 128,
+      "max_interaction_bins": 8,
+      "interactions": 0,
+      "outer_bags": 4,
+      "inner_bags": 2,
+      "min_samples_leaf": 1,
+      "max_leaves": 5
+    },
+    "validation_score": 0.6324277040005668,
+    "training_time": 0.3464083671569824,
+    "success": true
+  },
+  {
+    "trial": 31,
+    "hyperparameters": {
+      "learning_rate": 0.011567082023275763,
+      "max_bins": 64,
+      "max_interaction_bins": 32,
+      "interactions": 20,
+      "outer_bags": 16,
+      "inner_bags": 0,
+      "min_samples_leaf": 1,
+      "max_leaves": 2
+    },
+    "validation_score": 0.6210893670470582,
+    "training_time": 5.417612791061401,
+    "success": true
+  },
+  {
+    "trial": 32,
+    "hyperparameters": {
+      "learning_rate": 0.06462630166282182,
+      "max_bins": 64,
+      "max_interaction_bins": 8,
+      "interactions": 0,
+      "outer_bags": 8,
+      "inner_bags": 2,
+      "min_samples_leaf": 3,
+      "max_leaves": 3
+    },
+    "validation_score": 0.6273978881924474,
+    "training_time": 0.4900550842285156,
+    "success": true
+  },
+  {
+    "trial": 33,
+    "hyperparameters": {
+      "learning_rate": 0.021018027049593893,
+      "max_bins": 32,
+      "max_interaction_bins": 16,
+      "interactions": 15,
+      "outer_bags": 2,
+      "inner_bags": 16,
+      "min_samples_leaf": 3,
+      "max_leaves": 20
+    },
+    "validation_score": 0.6143072811490758,
+    "training_time": 3.996150016784668,
+    "success": true
+  },
+  {
+    "trial": 34,
+    "hyperparameters": {
+      "learning_rate": 0.057325081791805316,
+      "max_bins": 128,
+      "max_interaction_bins": 16,
+      "interactions": 0,
+      "outer_bags": 1,
+      "inner_bags": 4,
+      "min_samples_leaf": 3,
+      "max_leaves": 3
+    },
+    "validation_score": 0.6373456655179469,
+    "training_time": 0.18306517601013184,
+    "success": true
+  },
+  {
+    "trial": 35,
+    "hyperparameters": {
+      "learning_rate": 0.03177215017587917,
+      "max_bins": 16,
+      "max_interaction_bins": 32,
+      "interactions": 5,
+      "outer_bags": 2,
+      "inner_bags": 4,
+      "min_samples_leaf": 1,
+      "max_leaves": 15
+    },
+    "validation_score": 0.6139764577322889,
+    "training_time": 1.9483888149261475,
+    "success": true
+  },
+  {
+    "trial": 36,
+    "hyperparameters": {
+      "learning_rate": 0.091991794148119,
+      "max_bins": 256,
+      "max_interaction_bins": 128,
+      "interactions": 10,
+      "outer_bags": 1,
+      "inner_bags": 0,
+      "min_samples_leaf": 2,
+      "max_leaves": 20
+    },
+    "validation_score": 0.6098263464213508,
+    "training_time": 2.8503708839416504,
+    "success": true
+  },
+  {
+    "trial": 37,
+    "hyperparameters": {
+      "learning_rate": 0.00576994152252353,
+      "max_bins": 16,
+      "max_interaction_bins": 16,
+      "interactions": 0,
+      "outer_bags": 16,
+      "inner_bags": 16,
+      "min_samples_leaf": 5,
+      "max_leaves": 10
+    },
+    "validation_score": 0.6385900913301531,
+    "training_time": 1.4996392726898193,
+    "success": true
+  },
+  {
+    "trial": 38,
+    "hyperparameters": {
+      "learning_rate": 0.05056614450769774,
+      "max_bins": 64,
+      "max_interaction_bins": 64,
+      "interactions": 15,
+      "outer_bags": 1,
+      "inner_bags": 4,
+      "min_samples_leaf": 1,
+      "max_leaves": 3
+    },
+    "validation_score": 0.6245364477557321,
+    "training_time": 4.440244913101196,
+    "success": true
+  },
+  {
+    "trial": 39,
+    "hyperparameters": {
+      "learning_rate": 0.05266965593352523,
+      "max_bins": 128,
+      "max_interaction_bins": 32,
+      "interactions": 5,
+      "outer_bags": 8,
+      "inner_bags": 8,
+      "min_samples_leaf": 2,
+      "max_leaves": 20
+    },
+    "validation_score": 0.6131905959458422,
+    "training_time": 6.560330390930176,
+    "success": true
+  },
+  {
+    "trial": 40,
+    "hyperparameters": {
+      "learning_rate": 0.036186492662718416,
+      "max_bins": 16,
+      "max_interaction_bins": 64,
+      "interactions": 10,
+      "outer_bags": 8,
+      "inner_bags": 2,
+      "min_samples_leaf": 2,
+      "max_leaves": 20
+    },
+    "validation_score": 0.5961667304089621,
+    "training_time": 3.496337652206421,
+    "success": true
+  },
+  {
+    "trial": 41,
+    "hyperparameters": {
+      "learning_rate": 0.028247341310332432,
+      "max_bins": 128,
+      "max_interaction_bins": 64,
+      "interactions": 20,
+      "outer_bags": 4,
+      "inner_bags": 0,
+      "min_samples_leaf": 3,
+      "max_leaves": 3
+    },
+    "validation_score": 0.6234382837912377,
+    "training_time": 2.8663601875305176,
+    "success": true
+  },
+  {
+    "trial": 42,
+    "hyperparameters": {
+      "learning_rate": 0.026447200283408853,
+      "max_bins": 16,
+      "max_interaction_bins": 8,
+      "interactions": 0,
+      "outer_bags": 1,
+      "inner_bags": 8,
+      "min_samples_leaf": 10,
+      "max_leaves": 5
+    },
+    "validation_score": 0.6404307932740911,
+    "training_time": 0.2329397201538086,
+    "success": true
+  },
+  {
+    "trial": 43,
+    "hyperparameters": {
+      "learning_rate": 0.005558058369517066,
+      "max_bins": 32,
+      "max_interaction_bins": 8,
+      "interactions": 20,
+      "outer_bags": 16,
+      "inner_bags": 0,
+      "min_samples_leaf": 2,
+      "max_leaves": 5
+    },
+    "validation_score": 0.6222788925553188,
+    "training_time": 2.028573751449585,
+    "success": true
+  },
+  {
+    "trial": 44,
+    "hyperparameters": {
+      "learning_rate": 0.06241700764077235,
+      "max_bins": 512,
+      "max_interaction_bins": 128,
+      "interactions": 10,
+      "outer_bags": 16,
+      "inner_bags": 8,
+      "min_samples_leaf": 3,
+      "max_leaves": 3
+    },
+    "validation_score": 0.614820957190514,
+    "training_time": 60.59481406211853,
+    "success": true
+  },
+  {
+    "trial": 45,
+    "hyperparameters": {
+      "learning_rate": 0.02105808840926016,
+      "max_bins": 256,
+      "max_interaction_bins": 128,
+      "interactions": 10,
+      "outer_bags": 1,
+      "inner_bags": 2,
+      "min_samples_leaf": 5,
+      "max_leaves": 3
+    },
+    "validation_score": 0.6280570361179645,
+    "training_time": 5.043609380722046,
+    "success": true
+  },
+  {
+    "trial": 46,
+    "hyperparameters": {
+      "learning_rate": 0.06597015433806273,
+      "max_bins": 128,
+      "max_interaction_bins": 64,
+      "interactions": 10,
+      "outer_bags": 1,
+      "inner_bags": 2,
+      "min_samples_leaf": 10,
+      "max_leaves": 2
+    },
+    "validation_score": 0.6336328812111464,
+    "training_time": 2.5307042598724365,
+    "success": true
+  },
+  {
+    "trial": 47,
+    "hyperparameters": {
+      "learning_rate": 0.06510755388594933,
+      "max_bins": 32,
+      "max_interaction_bins": 32,
+      "interactions": 15,
+      "outer_bags": 2,
+      "inner_bags": 0,
+      "min_samples_leaf": 10,
+      "max_leaves": 5
+    },
+    "validation_score": 0.6166809758498311,
+    "training_time": 1.039360761642456,
+    "success": true
+  },
+  {
+    "trial": 48,
+    "hyperparameters": {
+      "learning_rate": 0.05046973772641457,
+      "max_bins": 256,
+      "max_interaction_bins": 64,
+      "interactions": 20,
+      "outer_bags": 4,
+      "inner_bags": 0,
+      "min_samples_leaf": 3,
+      "max_leaves": 15
+    },
+    "validation_score": 0.5869175501266468,
+    "training_time": 3.7041213512420654,
+    "success": true
+  },
+  {
+    "trial": 49,
+    "hyperparameters": {
+      "learning_rate": 0.016152365677848543,
+      "max_bins": 64,
+      "max_interaction_bins": 64,
+      "interactions": 15,
+      "outer_bags": 4,
+      "inner_bags": 4,
+      "min_samples_leaf": 3,
+      "max_leaves": 2
+    },
+    "validation_score": 0.6290735080309025,
+    "training_time": 11.239387035369873,
+    "success": true
+  },
+  {
+    "trial": 50,
+    "hyperparameters": {
+      "learning_rate": 0.02089935601567942,
+      "max_bins": 64,
+      "max_interaction_bins": 32,
+      "interactions": 20,
+      "outer_bags": 16,
+      "inner_bags": 16,
+      "min_samples_leaf": 3,
+      "max_leaves": 15
+    },
+    "validation_score": 0.5829340581227646,
+    "training_time": 69.51934599876404,
+    "success": true
+  }
+]
