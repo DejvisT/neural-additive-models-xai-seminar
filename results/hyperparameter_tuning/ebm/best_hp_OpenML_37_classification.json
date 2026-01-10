@@ -1,0 +1,10 @@
+{
+  "learning_rate": 0.030786459674615258,
+  "max_bins": 64,
+  "max_interaction_bins": 64,
+  "interactions": 0,
+  "outer_bags": 2,
+  "inner_bags": 2,
+  "min_samples_leaf": 3,
+  "max_leaves": 3
+}
