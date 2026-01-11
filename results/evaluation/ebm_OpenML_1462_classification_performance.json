@@ -1,0 +1,462 @@
+{
+  "dataset_id": 1462,
+  "dataset_name": "OpenML_1462_classification",
+  "task_type": "classification",
+  "model_type": "EBM",
+  "num_folds": 5,
+  "num_splits": 20,
+  "folds": [
+    {
+      "fold": 1,
+      "test_set_size": 275,
+      "auc": 1.0,
+      "metric_name": "AUC",
+      "metric_value": 1.0,
+      "per_split_metrics": [
+        {
+          "split": 1,
+          "auc": 1.0
+        },
+        {
+          "split": 2,
+          "auc": 1.0
+        },
+        {
+          "split": 3,
+          "auc": 0.5
+        },
+        {
+          "split": 4,
+          "auc": 1.0
+        },
+        {
+          "split": 5,
+          "auc": 1.0
+        },
+        {
+          "split": 6,
+          "auc": 1.0
+        },
+        {
+          "split": 7,
+          "auc": 0.5
+        },
+        {
+          "split": 8,
+          "auc": 1.0
+        },
+        {
+          "split": 9,
+          "auc": 1.0
+        },
+        {
+          "split": 10,
+          "auc": 0.5816993464052287
+        },
+        {
+          "split": 11,
+          "auc": 1.0
+        },
+        {
+          "split": 12,
+          "auc": 1.0
+        },
+        {
+          "split": 13,
+          "auc": 1.0
+        },
+        {
+          "split": 14,
+          "auc": 1.0
+        },
+        {
+          "split": 15,
+          "auc": 1.0
+        },
+        {
+          "split": 16,
+          "auc": 1.0
+        },
+        {
+          "split": 17,
+          "auc": 1.0
+        },
+        {
+          "split": 18,
+          "auc": 1.0
+        },
+        {
+          "split": 19,
+          "auc": 1.0
+        },
+        {
+          "split": 20,
+          "auc": 1.0
+        }
+      ]
+    },
+    {
+      "fold": 2,
+      "test_set_size": 275,
+      "auc": 1.0,
+      "metric_name": "AUC",
+      "metric_value": 1.0,
+      "per_split_metrics": [
+        {
+          "split": 1,
+          "auc": 1.0
+        },
+        {
+          "split": 2,
+          "auc": 1.0
+        },
+        {
+          "split": 3,
+          "auc": 1.0
+        },
+        {
+          "split": 4,
+          "auc": 1.0
+        },
+        {
+          "split": 5,
+          "auc": 1.0
+        },
+        {
+          "split": 6,
+          "auc": 1.0
+        },
+        {
+          "split": 7,
+          "auc": 1.0
+        },
+        {
+          "split": 8,
+          "auc": 1.0
+        },
+        {
+          "split": 9,
+          "auc": 1.0
+        },
+        {
+          "split": 10,
+          "auc": 1.0
+        },
+        {
+          "split": 11,
+          "auc": 1.0
+        },
+        {
+          "split": 12,
+          "auc": 1.0
+        },
+        {
+          "split": 13,
+          "auc": 1.0
+        },
+        {
+          "split": 14,
+          "auc": 1.0
+        },
+        {
+          "split": 15,
+          "auc": 1.0
+        },
+        {
+          "split": 16,
+          "auc": 1.0
+        },
+        {
+          "split": 17,
+          "auc": 1.0
+        },
+        {
+          "split": 18,
+          "auc": 0.7050787528126005
+        },
+        {
+          "split": 19,
+          "auc": 1.0
+        },
+        {
+          "split": 20,
+          "auc": 1.0
+        }
+      ]
+    },
+    {
+      "fold": 3,
+      "test_set_size": 274,
+      "auc": 1.0,
+      "metric_name": "AUC",
+      "metric_value": 1.0,
+      "per_split_metrics": [
+        {
+          "split": 1,
+          "auc": 0.4991911130284728
+        },
+        {
+          "split": 2,
+          "auc": 0.6118960310612597
+        },
+        {
+          "split": 3,
+          "auc": 0.5180112165660052
+        },
+        {
+          "split": 4,
+          "auc": 1.0
+        },
+        {
+          "split": 5,
+          "auc": 1.0
+        },
+        {
+          "split": 6,
+          "auc": 1.0
+        },
+        {
+          "split": 7,
+          "auc": 1.0
+        },
+        {
+          "split": 8,
+          "auc": 1.0
+        },
+        {
+          "split": 9,
+          "auc": 1.0
+        },
+        {
+          "split": 10,
+          "auc": 0.5
+        },
+        {
+          "split": 11,
+          "auc": 1.0
+        },
+        {
+          "split": 12,
+          "auc": 0.5
+        },
+        {
+          "split": 13,
+          "auc": 1.0
+        },
+        {
+          "split": 14,
+          "auc": 0.779847929249353
+        },
+        {
+          "split": 15,
+          "auc": 1.0
+        },
+        {
+          "split": 16,
+          "auc": 0.5580780845556514
+        },
+        {
+          "split": 17,
+          "auc": 1.0
+        },
+        {
+          "split": 18,
+          "auc": 0.55505823986195
+        },
+        {
+          "split": 19,
+          "auc": 1.0
+        },
+        {
+          "split": 20,
+          "auc": 1.0
+        }
+      ]
+    },
+    {
+      "fold": 4,
+      "test_set_size": 274,
+      "auc": 1.0,
+      "metric_name": "AUC",
+      "metric_value": 1.0,
+      "per_split_metrics": [
+        {
+          "split": 1,
+          "auc": 0.6079055220017255
+        },
+        {
+          "split": 2,
+          "auc": 1.0
+        },
+        {
+          "split": 3,
+          "auc": 1.0
+        },
+        {
+          "split": 4,
+          "auc": 1.0
+        },
+        {
+          "split": 5,
+          "auc": 1.0
+        },
+        {
+          "split": 6,
+          "auc": 1.0
+        },
+        {
+          "split": 7,
+          "auc": 0.6401531492666092
+        },
+        {
+          "split": 8,
+          "auc": 0.5641716997411562
+        },
+        {
+          "split": 9,
+          "auc": 1.0
+        },
+        {
+          "split": 10,
+          "auc": 1.0
+        },
+        {
+          "split": 11,
+          "auc": 1.0
+        },
+        {
+          "split": 12,
+          "auc": 0.9879206212251941
+        },
+        {
+          "split": 13,
+          "auc": 1.0
+        },
+        {
+          "split": 14,
+          "auc": 1.0
+        },
+        {
+          "split": 15,
+          "auc": 1.0
+        },
+        {
+          "split": 16,
+          "auc": 1.0
+        },
+        {
+          "split": 17,
+          "auc": 1.0
+        },
+        {
+          "split": 18,
+          "auc": 1.0
+        },
+        {
+          "split": 19,
+          "auc": 1.0
+        },
+        {
+          "split": 20,
+          "auc": 1.0
+        }
+      ]
+    },
+    {
+      "fold": 5,
+      "test_set_size": 274,
+      "auc": 1.0,
+      "metric_name": "AUC",
+      "metric_value": 1.0,
+      "per_split_metrics": [
+        {
+          "split": 1,
+          "auc": 1.0
+        },
+        {
+          "split": 2,
+          "auc": 1.0
+        },
+        {
+          "split": 3,
+          "auc": 1.0
+        },
+        {
+          "split": 4,
+          "auc": 1.0
+        },
+        {
+          "split": 5,
+          "auc": 1.0
+        },
+        {
+          "split": 6,
+          "auc": 0.6448986194995686
+        },
+        {
+          "split": 7,
+          "auc": 1.0
+        },
+        {
+          "split": 8,
+          "auc": 1.0
+        },
+        {
+          "split": 9,
+          "auc": 1.0
+        },
+        {
+          "split": 10,
+          "auc": 1.0
+        },
+        {
+          "split": 11,
+          "auc": 1.0
+        },
+        {
+          "split": 12,
+          "auc": 1.0
+        },
+        {
+          "split": 13,
+          "auc": 1.0
+        },
+        {
+          "split": 14,
+          "auc": 1.0
+        },
+        {
+          "split": 15,
+          "auc": 1.0
+        },
+        {
+          "split": 16,
+          "auc": 1.0
+        },
+        {
+          "split": 17,
+          "auc": 1.0
+        },
+        {
+          "split": 18,
+          "auc": 1.0
+        },
+        {
+          "split": 19,
+          "auc": 1.0
+        },
+        {
+          "split": 20,
+          "auc": 1.0
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "mean_metric": 1.0,
+    "std_metric": 0.0,
+    "min_metric": 1.0,
+    "max_metric": 1.0,
+    "metric_name": "AUC"
+  }
+}
