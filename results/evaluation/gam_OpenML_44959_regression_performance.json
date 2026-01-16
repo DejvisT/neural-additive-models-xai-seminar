@@ -1,0 +1,92 @@
+{
+  "dataset_id": 44959,
+  "dataset_name": "OpenML_44959_regression",
+  "task_type": "regression",
+  "model_type": "GAM",
+  "num_folds": 5,
+  "num_splits": 1,
+  "folds": [
+    {
+      "fold": 1,
+      "test_set_size": 206,
+      "rmse": 5.626922877988539,
+      "mae": 4.2203391907953325,
+      "metric_name": "RMSE",
+      "metric_value": 5.626922877988539,
+      "per_split_metrics": [
+        {
+          "split": 1,
+          "rmse": 5.626922877988539,
+          "mae": 4.2203391907953325
+        }
+      ]
+    },
+    {
+      "fold": 2,
+      "test_set_size": 206,
+      "rmse": 6.344465732356859,
+      "mae": 4.714770396597609,
+      "metric_name": "RMSE",
+      "metric_value": 6.344465732356859,
+      "per_split_metrics": [
+        {
+          "split": 1,
+          "rmse": 6.344465732356859,
+          "mae": 4.714770396597609
+        }
+      ]
+    },
+    {
+      "fold": 3,
+      "test_set_size": 206,
+      "rmse": 5.160712236382751,
+      "mae": 3.853598607124668,
+      "metric_name": "RMSE",
+      "metric_value": 5.160712236382751,
+      "per_split_metrics": [
+        {
+          "split": 1,
+          "rmse": 5.160712236382751,
+          "mae": 3.853598607124668
+        }
+      ]
+    },
+    {
+      "fold": 4,
+      "test_set_size": 206,
+      "rmse": 5.147034395795695,
+      "mae": 3.9773192796853944,
+      "metric_name": "RMSE",
+      "metric_value": 5.147034395795695,
+      "per_split_metrics": [
+        {
+          "split": 1,
+          "rmse": 5.147034395795695,
+          "mae": 3.9773192796853944
+        }
+      ]
+    },
+    {
+      "fold": 5,
+      "test_set_size": 206,
+      "rmse": 4.869806386156774,
+      "mae": 3.633250534321458,
+      "metric_name": "RMSE",
+      "metric_value": 4.869806386156774,
+      "per_split_metrics": [
+        {
+          "split": 1,
+          "rmse": 4.869806386156774,
+          "mae": 3.633250534321458
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "mean_metric": 5.429788325736125,
+    "std_metric": 0.5179629888877595,
+    "min_metric": 4.869806386156774,
+    "max_metric": 6.344465732356859,
+    "metric_name": "RMSE"
+  }
+}

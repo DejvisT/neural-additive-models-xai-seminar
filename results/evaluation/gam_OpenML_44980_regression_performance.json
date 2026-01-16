@@ -1,0 +1,92 @@
+{
+  "dataset_id": 44980,
+  "dataset_name": "OpenML_44980_regression",
+  "task_type": "regression",
+  "model_type": "GAM",
+  "num_folds": 5,
+  "num_splits": 1,
+  "folds": [
+    {
+      "fold": 1,
+      "test_set_size": 1639,
+      "rmse": 0.1988639729889199,
+      "mae": 0.15931166908620875,
+      "metric_name": "RMSE",
+      "metric_value": 0.1988639729889199,
+      "per_split_metrics": [
+        {
+          "split": 1,
+          "rmse": 0.1988639729889199,
+          "mae": 0.15931166908620875
+        }
+      ]
+    },
+    {
+      "fold": 2,
+      "test_set_size": 1639,
+      "rmse": 0.19527400550986848,
+      "mae": 0.1583655957325197,
+      "metric_name": "RMSE",
+      "metric_value": 0.19527400550986848,
+      "per_split_metrics": [
+        {
+          "split": 1,
+          "rmse": 0.19527400550986848,
+          "mae": 0.1583655957325197
+        }
+      ]
+    },
+    {
+      "fold": 3,
+      "test_set_size": 1638,
+      "rmse": 0.19508817155150163,
+      "mae": 0.15614697408517647,
+      "metric_name": "RMSE",
+      "metric_value": 0.19508817155150163,
+      "per_split_metrics": [
+        {
+          "split": 1,
+          "rmse": 0.19508817155150163,
+          "mae": 0.15614697408517647
+        }
+      ]
+    },
+    {
+      "fold": 4,
+      "test_set_size": 1638,
+      "rmse": 0.19870170119546296,
+      "mae": 0.158919048980284,
+      "metric_name": "RMSE",
+      "metric_value": 0.19870170119546296,
+      "per_split_metrics": [
+        {
+          "split": 1,
+          "rmse": 0.19870170119546296,
+          "mae": 0.158919048980284
+        }
+      ]
+    },
+    {
+      "fold": 5,
+      "test_set_size": 1638,
+      "rmse": 0.20004536852562047,
+      "mae": 0.16224060599340895,
+      "metric_name": "RMSE",
+      "metric_value": 0.20004536852562047,
+      "per_split_metrics": [
+        {
+          "split": 1,
+          "rmse": 0.20004536852562047,
+          "mae": 0.16224060599340895
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "mean_metric": 0.19759464395427467,
+    "std_metric": 0.0020253685863850894,
+    "min_metric": 0.19508817155150163,
+    "max_metric": 0.20004536852562047,
+    "metric_name": "RMSE"
+  }
+}
