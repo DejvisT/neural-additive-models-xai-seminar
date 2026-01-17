@@ -1,0 +1,602 @@
+[
+  {
+    "trial": 1,
+    "hyperparameters": {
+      "n_splines": 24,
+      "lam": 0.01,
+      "spline_order": 2
+    },
+    "validation_score": 0.6937728937728938,
+    "training_time": 22.438780546188354,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 2,
+    "hyperparameters": {
+      "n_splines": 6,
+      "lam": 1.0,
+      "spline_order": 3
+    },
+    "validation_score": 0.7916828269769447,
+    "training_time": 0.6664326190948486,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 3,
+    "hyperparameters": {
+      "n_splines": 16,
+      "lam": 100.0,
+      "spline_order": 2
+    },
+    "validation_score": 0.7932773109243698,
+    "training_time": 1.8110604286193848,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 4,
+    "hyperparameters": {
+      "n_splines": 12,
+      "lam": 10.0,
+      "spline_order": 5
+    },
+    "validation_score": 0.7924154277095454,
+    "training_time": 1.2648098468780518,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 5,
+    "hyperparameters": {
+      "n_splines": 6,
+      "lam": 10.0,
+      "spline_order": 2
+    },
+    "validation_score": 0.7924154277095453,
+    "training_time": 0.5947122573852539,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 6,
+    "hyperparameters": {
+      "n_splines": 12,
+      "lam": 0.01,
+      "spline_order": 5
+    },
+    "validation_score": 0.7748330101271279,
+    "training_time": 1.3898355960845947,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 7,
+    "hyperparameters": {
+      "n_splines": 20,
+      "lam": 1.0,
+      "spline_order": 3
+    },
+    "validation_score": 0.7864253393665158,
+    "training_time": 2.7274374961853027,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 8,
+    "hyperparameters": {
+      "n_splines": 6,
+      "lam": 1.0,
+      "spline_order": 5
+    },
+    "validation_score": 0.7934927817280759,
+    "training_time": 0.649611234664917,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 9,
+    "hyperparameters": {
+      "n_splines": 16,
+      "lam": 10000.0,
+      "spline_order": 4
+    },
+    "validation_score": 0.7935789700495584,
+    "training_time": 1.6294777393341064,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 10,
+    "hyperparameters": {
+      "n_splines": 8,
+      "lam": 10000.0,
+      "spline_order": 3
+    },
+    "validation_score": 0.7937944408532644,
+    "training_time": 0.765697717666626,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 11,
+    "hyperparameters": {
+      "n_splines": 12,
+      "lam": 0.01,
+      "spline_order": 5
+    },
+    "validation_score": 0.7748330101271279,
+    "training_time": 1.3669142723083496,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 12,
+    "hyperparameters": {
+      "n_splines": 20,
+      "lam": 10000.0,
+      "spline_order": 3
+    },
+    "validation_score": 0.7924154277095454,
+    "training_time": 2.385866403579712,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 13,
+    "hyperparameters": {
+      "n_splines": 8,
+      "lam": 10.0,
+      "spline_order": 4
+    },
+    "validation_score": 0.7922430510665806,
+    "training_time": 0.7000246047973633,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 14,
+    "hyperparameters": {
+      "n_splines": 6,
+      "lam": 0.1,
+      "spline_order": 3
+    },
+    "validation_score": 0.7951303598362423,
+    "training_time": 0.7741184234619141,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 15,
+    "hyperparameters": {
+      "n_splines": 20,
+      "lam": 0.01,
+      "spline_order": 5
+    },
+    "validation_score": 0.7266106442577032,
+    "training_time": 3.426954507827759,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 16,
+    "hyperparameters": {
+      "n_splines": 6,
+      "lam": 1.0,
+      "spline_order": 2
+    },
+    "validation_score": 0.7937944408532644,
+    "training_time": 0.5999846458435059,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 17,
+    "hyperparameters": {
+      "n_splines": 20,
+      "lam": 0.1,
+      "spline_order": 3
+    },
+    "validation_score": 0.7524240465416937,
+    "training_time": 2.9820046424865723,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 18,
+    "hyperparameters": {
+      "n_splines": 8,
+      "lam": 0.01,
+      "spline_order": 5
+    },
+    "validation_score": 0.7995690583925879,
+    "training_time": 0.9245238304138184,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 19,
+    "hyperparameters": {
+      "n_splines": 12,
+      "lam": 1.0,
+      "spline_order": 3
+    },
+    "validation_score": 0.7987933634992459,
+    "training_time": 1.375321865081787,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 20,
+    "hyperparameters": {
+      "n_splines": 16,
+      "lam": 0.1,
+      "spline_order": 3
+    },
+    "validation_score": 0.7623357035121741,
+    "training_time": 1.974158525466919,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 21,
+    "hyperparameters": {
+      "n_splines": 20,
+      "lam": 0.1,
+      "spline_order": 2
+    },
+    "validation_score": 0.7464770523594053,
+    "training_time": 2.766249418258667,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 22,
+    "hyperparameters": {
+      "n_splines": 16,
+      "lam": 10.0,
+      "spline_order": 4
+    },
+    "validation_score": 0.798620986856281,
+    "training_time": 1.7993981838226318,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 23,
+    "hyperparameters": {
+      "n_splines": 16,
+      "lam": 0.01,
+      "spline_order": 5
+    },
+    "validation_score": 0.7520792932557637,
+    "training_time": 2.200483798980713,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 24,
+    "hyperparameters": {
+      "n_splines": 16,
+      "lam": 1.0,
+      "spline_order": 4
+    },
+    "validation_score": 0.7952165481577246,
+    "training_time": 2.183593273162842,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 25,
+    "hyperparameters": {
+      "n_splines": 6,
+      "lam": 1.0,
+      "spline_order": 5
+    },
+    "validation_score": 0.7934927817280759,
+    "training_time": 0.7713873386383057,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 26,
+    "hyperparameters": {
+      "n_splines": 6,
+      "lam": 0.01,
+      "spline_order": 5
+    },
+    "validation_score": 0.7912087912087913,
+    "training_time": 0.7184288501739502,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 27,
+    "hyperparameters": {
+      "n_splines": 24,
+      "lam": 10.0,
+      "spline_order": 2
+    },
+    "validation_score": 0.7977160094807154,
+    "training_time": 3.5319526195526123,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 28,
+    "hyperparameters": {
+      "n_splines": 24,
+      "lam": 0.01,
+      "spline_order": 2
+    },
+    "validation_score": 0.6937728937728938,
+    "training_time": 22.944506883621216,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 29,
+    "hyperparameters": {
+      "n_splines": 6,
+      "lam": 1.0,
+      "spline_order": 5
+    },
+    "validation_score": 0.7934927817280759,
+    "training_time": 0.6500773429870605,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 30,
+    "hyperparameters": {
+      "n_splines": 12,
+      "lam": 100.0,
+      "spline_order": 2
+    },
+    "validation_score": 0.7927601809954752,
+    "training_time": 1.13313889503479,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 31,
+    "hyperparameters": {
+      "n_splines": 6,
+      "lam": 10000.0,
+      "spline_order": 3
+    },
+    "validation_score": 0.7937944408532644,
+    "training_time": 0.6019527912139893,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 32,
+    "hyperparameters": {
+      "n_splines": 12,
+      "lam": 0.01,
+      "spline_order": 5
+    },
+    "validation_score": 0.7748330101271279,
+    "training_time": 1.4061646461486816,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 33,
+    "hyperparameters": {
+      "n_splines": 20,
+      "lam": 100.0,
+      "spline_order": 2
+    },
+    "validation_score": 0.7959922430510666,
+    "training_time": 2.4736921787261963,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 34,
+    "hyperparameters": {
+      "n_splines": 16,
+      "lam": 100.0,
+      "spline_order": 5
+    },
+    "validation_score": 0.7923723335488042,
+    "training_time": 1.8162364959716797,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 35,
+    "hyperparameters": {
+      "n_splines": 12,
+      "lam": 10.0,
+      "spline_order": 5
+    },
+    "validation_score": 0.7924154277095454,
+    "training_time": 1.3999431133270264,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 36,
+    "hyperparameters": {
+      "n_splines": 12,
+      "lam": 1.0,
+      "spline_order": 3
+    },
+    "validation_score": 0.7987933634992459,
+    "training_time": 1.4998712539672852,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 37,
+    "hyperparameters": {
+      "n_splines": 8,
+      "lam": 0.01,
+      "spline_order": 4
+    },
+    "validation_score": 0.7899590605472959,
+    "training_time": 0.8891654014587402,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 38,
+    "hyperparameters": {
+      "n_splines": 8,
+      "lam": 10.0,
+      "spline_order": 4
+    },
+    "validation_score": 0.7922430510665806,
+    "training_time": 0.8268868923187256,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 39,
+    "hyperparameters": {
+      "n_splines": 12,
+      "lam": 10.0,
+      "spline_order": 5
+    },
+    "validation_score": 0.7924154277095454,
+    "training_time": 1.3163812160491943,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 40,
+    "hyperparameters": {
+      "n_splines": 20,
+      "lam": 10000.0,
+      "spline_order": 5
+    },
+    "validation_score": 0.793708252531782,
+    "training_time": 2.5166120529174805,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 41,
+    "hyperparameters": {
+      "n_splines": 8,
+      "lam": 10000.0,
+      "spline_order": 5
+    },
+    "validation_score": 0.7937944408532644,
+    "training_time": 0.8330240249633789,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 42,
+    "hyperparameters": {
+      "n_splines": 16,
+      "lam": 10000.0,
+      "spline_order": 5
+    },
+    "validation_score": 0.7936220642102996,
+    "training_time": 1.7992143630981445,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 43,
+    "hyperparameters": {
+      "n_splines": 24,
+      "lam": 1.0,
+      "spline_order": 2
+    },
+    "validation_score": 0.7744882568411979,
+    "training_time": 2.8883399963378906,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 44,
+    "hyperparameters": {
+      "n_splines": 8,
+      "lam": 1000.0,
+      "spline_order": 2
+    },
+    "validation_score": 0.7934927817280759,
+    "training_time": 0.6889722347259521,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 45,
+    "hyperparameters": {
+      "n_splines": 6,
+      "lam": 100.0,
+      "spline_order": 4
+    },
+    "validation_score": 0.7937513466925232,
+    "training_time": 0.9342987537384033,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 46,
+    "hyperparameters": {
+      "n_splines": 8,
+      "lam": 1000.0,
+      "spline_order": 3
+    },
+    "validation_score": 0.7936220642102996,
+    "training_time": 0.8331706523895264,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 47,
+    "hyperparameters": {
+      "n_splines": 16,
+      "lam": 0.1,
+      "spline_order": 4
+    },
+    "validation_score": 0.7706959706959708,
+    "training_time": 1.933811902999878,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 48,
+    "hyperparameters": {
+      "n_splines": 6,
+      "lam": 10000.0,
+      "spline_order": 4
+    },
+    "validation_score": 0.7937944408532644,
+    "training_time": 0.6918766498565674,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 49,
+    "hyperparameters": {
+      "n_splines": 8,
+      "lam": 1000.0,
+      "spline_order": 2
+    },
+    "validation_score": 0.7934927817280759,
+    "training_time": 0.8186869621276855,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 50,
+    "hyperparameters": {
+      "n_splines": 6,
+      "lam": 100.0,
+      "spline_order": 3
+    },
+    "validation_score": 0.7934927817280759,
+    "training_time": 0.6126365661621094,
+    "converged": true,
+    "success": true
+  }
+]

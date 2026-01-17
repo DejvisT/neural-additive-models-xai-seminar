@@ -1,0 +1,602 @@
+[
+  {
+    "trial": 1,
+    "hyperparameters": {
+      "n_splines": 24,
+      "lam": 0.01,
+      "spline_order": 2
+    },
+    "validation_score": null,
+    "training_time": null,
+    "success": false,
+    "error": "PIRLS optimization has diverged.\nTry increasing regularization, or specifying an initial value for self.coef_"
+  },
+  {
+    "trial": 2,
+    "hyperparameters": {
+      "n_splines": 6,
+      "lam": 1.0,
+      "spline_order": 3
+    },
+    "validation_score": 0.8221752669039146,
+    "training_time": 1.6507222652435303,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 3,
+    "hyperparameters": {
+      "n_splines": 16,
+      "lam": 100.0,
+      "spline_order": 2
+    },
+    "validation_score": 0.8235097864768683,
+    "training_time": 13.268398761749268,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 4,
+    "hyperparameters": {
+      "n_splines": 12,
+      "lam": 10.0,
+      "spline_order": 5
+    },
+    "validation_score": 0.8252891459074734,
+    "training_time": 3.6409945487976074,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 5,
+    "hyperparameters": {
+      "n_splines": 6,
+      "lam": 10.0,
+      "spline_order": 2
+    },
+    "validation_score": 0.8079403914590747,
+    "training_time": 1.255537986755371,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 6,
+    "hyperparameters": {
+      "n_splines": 12,
+      "lam": 0.01,
+      "spline_order": 5
+    },
+    "validation_score": 0.833741103202847,
+    "training_time": 36.58878707885742,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 7,
+    "hyperparameters": {
+      "n_splines": 20,
+      "lam": 1.0,
+      "spline_order": 3
+    },
+    "validation_score": 0.8377446619217082,
+    "training_time": 10.65680480003357,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 8,
+    "hyperparameters": {
+      "n_splines": 6,
+      "lam": 1.0,
+      "spline_order": 5
+    },
+    "validation_score": 0.7903692170818505,
+    "training_time": 1.717982530593872,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 9,
+    "hyperparameters": {
+      "n_splines": 16,
+      "lam": 10000.0,
+      "spline_order": 4
+    },
+    "validation_score": 0.7904804270462632,
+    "training_time": 14.581583499908447,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 10,
+    "hyperparameters": {
+      "n_splines": 8,
+      "lam": 10000.0,
+      "spline_order": 3
+    },
+    "validation_score": 0.7904804270462634,
+    "training_time": 1.8043506145477295,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 11,
+    "hyperparameters": {
+      "n_splines": 12,
+      "lam": 0.01,
+      "spline_order": 5
+    },
+    "validation_score": 0.833741103202847,
+    "training_time": 36.620386600494385,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 12,
+    "hyperparameters": {
+      "n_splines": 20,
+      "lam": 10000.0,
+      "spline_order": 3
+    },
+    "validation_score": 0.7922597864768683,
+    "training_time": 22.936477184295654,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 13,
+    "hyperparameters": {
+      "n_splines": 8,
+      "lam": 10.0,
+      "spline_order": 4
+    },
+    "validation_score": 0.8063834519572953,
+    "training_time": 2.0044612884521484,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 14,
+    "hyperparameters": {
+      "n_splines": 6,
+      "lam": 0.1,
+      "spline_order": 3
+    },
+    "validation_score": 0.8326290035587188,
+    "training_time": 1.6120686531066895,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 15,
+    "hyperparameters": {
+      "n_splines": 20,
+      "lam": 0.01,
+      "spline_order": 5
+    },
+    "validation_score": null,
+    "training_time": null,
+    "success": false,
+    "error": "PIRLS optimization has diverged.\nTry increasing regularization, or specifying an initial value for self.coef_"
+  },
+  {
+    "trial": 16,
+    "hyperparameters": {
+      "n_splines": 6,
+      "lam": 1.0,
+      "spline_order": 2
+    },
+    "validation_score": 0.8281806049822065,
+    "training_time": 1.1756634712219238,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 17,
+    "hyperparameters": {
+      "n_splines": 20,
+      "lam": 0.1,
+      "spline_order": 3
+    },
+    "validation_score": 0.8387455516014234,
+    "training_time": 8.501707792282104,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 18,
+    "hyperparameters": {
+      "n_splines": 8,
+      "lam": 0.01,
+      "spline_order": 5
+    },
+    "validation_score": 0.8296263345195729,
+    "training_time": 1.8140366077423096,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 19,
+    "hyperparameters": {
+      "n_splines": 12,
+      "lam": 1.0,
+      "spline_order": 3
+    },
+    "validation_score": 0.8359653024911032,
+    "training_time": 3.5798568725585938,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 20,
+    "hyperparameters": {
+      "n_splines": 16,
+      "lam": 0.1,
+      "spline_order": 3
+    },
+    "validation_score": 0.8320729537366548,
+    "training_time": 25.06102752685547,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 21,
+    "hyperparameters": {
+      "n_splines": 20,
+      "lam": 0.1,
+      "spline_order": 2
+    },
+    "validation_score": 0.8345195729537367,
+    "training_time": 9.362016677856445,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 22,
+    "hyperparameters": {
+      "n_splines": 16,
+      "lam": 10.0,
+      "spline_order": 4
+    },
+    "validation_score": 0.8340747330960855,
+    "training_time": 14.145729064941406,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 23,
+    "hyperparameters": {
+      "n_splines": 16,
+      "lam": 0.01,
+      "spline_order": 5
+    },
+    "validation_score": 0.8205071174377224,
+    "training_time": 18.661060571670532,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 24,
+    "hyperparameters": {
+      "n_splines": 16,
+      "lam": 1.0,
+      "spline_order": 4
+    },
+    "validation_score": 0.8361877224199288,
+    "training_time": 6.80658745765686,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 25,
+    "hyperparameters": {
+      "n_splines": 6,
+      "lam": 1.0,
+      "spline_order": 5
+    },
+    "validation_score": 0.7903692170818505,
+    "training_time": 1.442991018295288,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 26,
+    "hyperparameters": {
+      "n_splines": 6,
+      "lam": 0.01,
+      "spline_order": 5
+    },
+    "validation_score": 0.8240658362989324,
+    "training_time": 1.292609453201294,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 27,
+    "hyperparameters": {
+      "n_splines": 24,
+      "lam": 10.0,
+      "spline_order": 2
+    },
+    "validation_score": 0.8370774021352313,
+    "training_time": 12.591193437576294,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 28,
+    "hyperparameters": {
+      "n_splines": 24,
+      "lam": 0.01,
+      "spline_order": 2
+    },
+    "validation_score": null,
+    "training_time": null,
+    "success": false,
+    "error": "PIRLS optimization has diverged.\nTry increasing regularization, or specifying an initial value for self.coef_"
+  },
+  {
+    "trial": 29,
+    "hyperparameters": {
+      "n_splines": 6,
+      "lam": 1.0,
+      "spline_order": 5
+    },
+    "validation_score": 0.7903692170818505,
+    "training_time": 1.4031758308410645,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 30,
+    "hyperparameters": {
+      "n_splines": 12,
+      "lam": 100.0,
+      "spline_order": 2
+    },
+    "validation_score": 0.813723309608541,
+    "training_time": 3.810039758682251,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 31,
+    "hyperparameters": {
+      "n_splines": 6,
+      "lam": 10000.0,
+      "spline_order": 3
+    },
+    "validation_score": 0.7904804270462634,
+    "training_time": 1.178380012512207,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 32,
+    "hyperparameters": {
+      "n_splines": 12,
+      "lam": 0.01,
+      "spline_order": 5
+    },
+    "validation_score": 0.833741103202847,
+    "training_time": 29.039555549621582,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 33,
+    "hyperparameters": {
+      "n_splines": 20,
+      "lam": 100.0,
+      "spline_order": 2
+    },
+    "validation_score": 0.8294039145907474,
+    "training_time": 13.344122171401978,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 34,
+    "hyperparameters": {
+      "n_splines": 16,
+      "lam": 100.0,
+      "spline_order": 5
+    },
+    "validation_score": null,
+    "training_time": null,
+    "success": false,
+    "error": "PIRLS optimization has diverged.\nTry increasing regularization, or specifying an initial value for self.coef_"
+  },
+  {
+    "trial": 35,
+    "hyperparameters": {
+      "n_splines": 12,
+      "lam": 10.0,
+      "spline_order": 5
+    },
+    "validation_score": 0.8252891459074734,
+    "training_time": 2.7860429286956787,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 36,
+    "hyperparameters": {
+      "n_splines": 12,
+      "lam": 1.0,
+      "spline_order": 3
+    },
+    "validation_score": 0.8359653024911032,
+    "training_time": 3.3341376781463623,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 37,
+    "hyperparameters": {
+      "n_splines": 8,
+      "lam": 0.01,
+      "spline_order": 4
+    },
+    "validation_score": 0.8338523131672597,
+    "training_time": 1.8443925380706787,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 38,
+    "hyperparameters": {
+      "n_splines": 8,
+      "lam": 10.0,
+      "spline_order": 4
+    },
+    "validation_score": 0.8063834519572953,
+    "training_time": 1.469416856765747,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 39,
+    "hyperparameters": {
+      "n_splines": 12,
+      "lam": 10.0,
+      "spline_order": 5
+    },
+    "validation_score": 0.8252891459074734,
+    "training_time": 2.765754461288452,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 40,
+    "hyperparameters": {
+      "n_splines": 20,
+      "lam": 10000.0,
+      "spline_order": 5
+    },
+    "validation_score": 0.7915925266903915,
+    "training_time": 18.92549777030945,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 41,
+    "hyperparameters": {
+      "n_splines": 8,
+      "lam": 10000.0,
+      "spline_order": 5
+    },
+    "validation_score": 0.7903692170818506,
+    "training_time": 1.5048210620880127,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 42,
+    "hyperparameters": {
+      "n_splines": 16,
+      "lam": 10000.0,
+      "spline_order": 5
+    },
+    "validation_score": 0.790702846975089,
+    "training_time": 6.39243745803833,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 43,
+    "hyperparameters": {
+      "n_splines": 24,
+      "lam": 1.0,
+      "spline_order": 2
+    },
+    "validation_score": 0.8384119217081851,
+    "training_time": 11.790533542633057,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 44,
+    "hyperparameters": {
+      "n_splines": 8,
+      "lam": 1000.0,
+      "spline_order": 2
+    },
+    "validation_score": 0.7909252669039145,
+    "training_time": 1.6167731285095215,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 45,
+    "hyperparameters": {
+      "n_splines": 6,
+      "lam": 100.0,
+      "spline_order": 4
+    },
+    "validation_score": 0.7901467971530249,
+    "training_time": 1.469688892364502,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 46,
+    "hyperparameters": {
+      "n_splines": 8,
+      "lam": 1000.0,
+      "spline_order": 3
+    },
+    "validation_score": 0.7907028469750889,
+    "training_time": 1.7155306339263916,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 47,
+    "hyperparameters": {
+      "n_splines": 16,
+      "lam": 0.1,
+      "spline_order": 4
+    },
+    "validation_score": null,
+    "training_time": null,
+    "success": false,
+    "error": "PIRLS optimization has diverged.\nTry increasing regularization, or specifying an initial value for self.coef_"
+  },
+  {
+    "trial": 48,
+    "hyperparameters": {
+      "n_splines": 6,
+      "lam": 10000.0,
+      "spline_order": 4
+    },
+    "validation_score": 0.7903692170818506,
+    "training_time": 1.4362854957580566,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 49,
+    "hyperparameters": {
+      "n_splines": 8,
+      "lam": 1000.0,
+      "spline_order": 2
+    },
+    "validation_score": 0.7909252669039145,
+    "training_time": 1.7338814735412598,
+    "converged": true,
+    "success": true
+  },
+  {
+    "trial": 50,
+    "hyperparameters": {
+      "n_splines": 6,
+      "lam": 100.0,
+      "spline_order": 3
+    },
+    "validation_score": 0.7909252669039145,
+    "training_time": 1.366506814956665,
+    "converged": true,
+    "success": true
+  }
+]
