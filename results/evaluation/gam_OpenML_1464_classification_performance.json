@@ -1,0 +1,82 @@
+{
+  "dataset_id": 1464,
+  "dataset_name": "OpenML_1464_classification",
+  "task_type": "classification",
+  "model_type": "GAM",
+  "num_folds": 5,
+  "num_splits": 1,
+  "folds": [
+    {
+      "fold": 1,
+      "test_set_size": 150,
+      "auc": 0.7502989715379096,
+      "metric_name": "AUC",
+      "metric_value": 0.7502989715379096,
+      "per_split_metrics": [
+        {
+          "split": 1,
+          "auc": 0.7502989715379096
+        }
+      ]
+    },
+    {
+      "fold": 2,
+      "test_set_size": 150,
+      "auc": 0.7328042328042328,
+      "metric_name": "AUC",
+      "metric_value": 0.7328042328042328,
+      "per_split_metrics": [
+        {
+          "split": 1,
+          "auc": 0.7328042328042328
+        }
+      ]
+    },
+    {
+      "fold": 3,
+      "test_set_size": 150,
+      "auc": 0.6941150145446409,
+      "metric_name": "AUC",
+      "metric_value": 0.6941150145446409,
+      "per_split_metrics": [
+        {
+          "split": 1,
+          "auc": 0.6941150145446409
+        }
+      ]
+    },
+    {
+      "fold": 4,
+      "test_set_size": 149,
+      "auc": 0.8126954346466543,
+      "metric_name": "AUC",
+      "metric_value": 0.8126954346466543,
+      "per_split_metrics": [
+        {
+          "split": 1,
+          "auc": 0.8126954346466543
+        }
+      ]
+    },
+    {
+      "fold": 5,
+      "test_set_size": 149,
+      "auc": 0.7848557692307692,
+      "metric_name": "AUC",
+      "metric_value": 0.7848557692307692,
+      "per_split_metrics": [
+        {
+          "split": 1,
+          "auc": 0.7848557692307692
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "mean_metric": 0.7549538845528414,
+    "std_metric": 0.04108978633715279,
+    "min_metric": 0.6941150145446409,
+    "max_metric": 0.8126954346466543,
+    "metric_name": "AUC"
+  }
+}
