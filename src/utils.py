@@ -1697,10 +1697,15 @@ def plot_ebm_shape_functions(
     all_shape_functions,
     y_limits=(-0.1, 0.1),
     n_cols=4,
-    figsize_scale=4.0
+    figsize_scale=4.0,
+    test_data=None,
+    data_x=None,
+    fold_test_indices=None,
+    n_blocks=20
 ):
     """
-    Plot average EBM shape functions across all splits.
+    Plot EBM shape functions across all splits (one line per split) plus mean.
+    Similar style to NAM plots.
     
     Args:
         column_names: List of feature names
@@ -1710,6 +1715,10 @@ def plot_ebm_shape_functions(
         y_limits: Tuple of (ymin, ymax) for y-axis limits. Default is (-0.1, 0.1).
         n_cols: Number of columns in the subplot grid. Default is 4.
         figsize_scale: Scaling factor for figure size. Default is 4.0.
+        test_data: Deprecated parameter (kept for backward compatibility, not used).
+        data_x: Deprecated parameter (kept for backward compatibility, not used).
+        fold_test_indices: Deprecated parameter (kept for backward compatibility, not used).
+        n_blocks: Deprecated parameter (kept for backward compatibility, not used).
     
     Returns:
         fig: matplotlib figure object
@@ -1719,6 +1728,9 @@ def plot_ebm_shape_functions(
     
     fig, axes = plt.subplots(n_rows, n_cols, figsize=(n_cols * figsize_scale, n_rows * figsize_scale))
     axes = axes.flatten() if n_features > 1 else [axes]
+    
+    # Color for plotting (similar to NAM style)
+    color_base = [0.4, 0.5, 0.9]  # Blue color similar to NAM
     
     for i, feat_name in enumerate(column_names):
         ax = axes[i]
@@ -1735,32 +1747,31 @@ def plot_ebm_shape_functions(
                     all_y.append(feat_data['y'])
         
         if all_x and all_y:
-            # Average across splits
-            # Find common x values
-            if len(all_x) > 0:
-                # For continuous features, use the first split's x values
-                x_vals = np.array(all_x[0])
-                y_vals = []
-                
-                for x_arr, y_arr in zip(all_x, all_y):
-                    x_arr = np.array(x_arr)
-                    y_arr = np.array(y_arr)
-                    # Interpolate to common x values
-                    if len(x_arr) == len(x_vals):
-                        y_vals.append(y_arr)
-                
-                if y_vals:
-                    y_mean = np.mean(y_vals, axis=0)
-                    y_std = np.std(y_vals, axis=0)
-                    
-                    ax.plot(x_vals, y_mean, 'b-', linewidth=2, label='Mean')
-                    ax.fill_between(x_vals, y_mean - y_std, y_mean + y_std, alpha=0.3, color='blue')
-                    ax.axhline(y=0, color='k', linestyle='--', linewidth=1)
-                    ax.set_xlabel(feat_name)
-                    ax.set_ylabel('Contribution')
-                    ax.set_title(feat_name)
-                    ax.set_ylim(y_limits[0], y_limits[1])
-                    ax.grid(True, alpha=0.3)
+            # Find common x values (use first split's x values)
+            x_vals = np.array(all_x[0])
+            y_vals = []
+            
+            # Plot individual split lines
+            for x_arr, y_arr in zip(all_x, all_y):
+                x_arr = np.array(x_arr)
+                y_arr = np.array(y_arr)
+                # Only plot if x arrays match in length
+                if len(x_arr) == len(x_vals):
+                    ax.plot(x_vals, y_arr, color=color_base, alpha=0.1, linewidth=1)
+                    y_vals.append(y_arr)
+            
+            # Plot mean line
+            if y_vals:
+                y_mean = np.mean(y_vals, axis=0)
+                ax.plot(x_vals, y_mean, color=color_base, linewidth=3)
+            
+            ax.axhline(y=0, color='k', linestyle='--', linewidth=1)
+            ax.set_xlabel(feat_name, fontsize='x-large')
+            ax.set_ylabel('Contribution', fontsize='x-large')
+            ax.set_title(feat_name, fontsize='x-large')
+            ax.set_ylim(y_limits[0], y_limits[1])
+            ax.grid(True, alpha=0.3)
+            ax.tick_params(labelsize='large')
     
     # Hide unused subplots
     for i in range(n_features, len(axes)):
