@@ -7,7 +7,6 @@ import shlex
 from pathlib import Path
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import neural_additive_models.data_utils as data_utils
 import neural_additive_models.graph_builder as graph_builder
 from utils import load_nam_checkpoint, get_test_predictions
@@ -274,26 +273,6 @@ def build_validation_scores_df(split_results_files, base_logdir, fixed_hp):
             })
 
     return pd.DataFrame(rows)
-
-
-def plot_validation_score_by_split(df, figsize=(12, 6)):
-    """Plot validation score vs split, with one line per trial."""
-    plt.figure(figsize=figsize)
-    for trial in df['trial'].unique():
-        trial_data = df[df['trial'] == trial]
-        plt.plot(
-            trial_data['split'],
-            trial_data['validation_score'],
-            marker='o',
-            label=f'Trial {trial}',
-        )
-    plt.xlabel('Split')
-    plt.ylabel('Validation Score')
-    plt.title('Validation Score by Split (colored by Trial)')
-    plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
-    plt.grid(True, alpha=0.3)
-    plt.tight_layout()
-    plt.show()
 
 
 def select_and_save_best_hp(df, base_logdir, out_filename='best_hp.json'):
