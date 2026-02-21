@@ -37,15 +37,29 @@ def ensure_src_on_path(project_root: Path) -> None:
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(
-        description="NAM hyperparameter tuning for OpenML (classification/regression), notebook-equivalent.",
+        description="NAM hyperparameter tuning for OpenML or synthetic datasets (correlated linear/nonlinear), notebook-equivalent.",
     )
-    p.add_argument("--dataset_id", type=int, required=True, help="OpenML dataset ID (e.g., 31, 1462, 44959).")
+    p.add_argument(
+        "--dataset_type",
+        type=str,
+        required=True,
+        choices=["openml", "synthetic"],
+        help="Dataset type: 'openml' for OpenML datasets or 'synthetic' for correlated linear/nonlinear.",
+    )
+    p.add_argument("--dataset_id", type=int, default=None, help="OpenML dataset ID (e.g., 31, 1462, 44959). Required when dataset_type='openml'.")
     p.add_argument(
         "--task_type",
         type=str,
-        required=True,
+        default=None,
         choices=["classification", "regression"],
-        help="Task type.",
+        help="Task type. Required when dataset_type='openml'.",
+    )
+    p.add_argument(
+        "--synthetic_type",
+        type=str,
+        default=None,
+        choices=["linear", "nonlinear"],
+        help="Synthetic dataset type. Required when dataset_type='synthetic'.",
     )
     p.add_argument("--n_trials", type=int, default=50, help="Number of random search trials (default: 50).")
     p.add_argument("--random_seed", type=int, default=42, help="Base random seed (default: 42).")
@@ -85,7 +99,19 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Set CUDA_VISIBLE_DEVICES='' for the training subprocess calls (default: False).",
     )
-    return p.parse_args()
+    args = p.parse_args()
+    
+    # Validate argument combinations
+    if args.dataset_type == "openml":
+        if args.dataset_id is None:
+            p.error("--dataset_id is required when --dataset_type='openml'")
+        if args.task_type is None:
+            p.error("--task_type is required when --dataset_type='openml'")
+    elif args.dataset_type == "synthetic":
+        if args.synthetic_type is None:
+            p.error("--synthetic_type is required when --dataset_type='synthetic'")
+    
+    return args
 
 
 # ---------------------------------------------------------------------------
@@ -97,8 +123,12 @@ def main() -> int:
     # imports + path setup + dataset params
     # ============================================================================
     args = parse_args()
-    OPENML_DATASET_ID = args.dataset_id
-    TASK_TYPE = args.task_type
+    DATASET_TYPE = args.dataset_type
+    
+    # Initialize variables for both dataset types
+    OPENML_DATASET_ID = args.dataset_id if DATASET_TYPE == "openml" else None
+    TASK_TYPE = args.task_type if DATASET_TYPE == "openml" else None
+    SYNTHETIC_TYPE = args.synthetic_type if DATASET_TYPE == "synthetic" else None
 
     project_root = find_project_root(Path(__file__).resolve().parent)
     ensure_src_on_path(project_root)
@@ -116,15 +146,29 @@ def main() -> int:
     # load hp tuning config
     # ============================================================================
     config_dir = project_root / "config" / "hp_tuning"
-    if TASK_TYPE == "classification":
-        CONF_PATH = config_dir / "openml_classification.json"
-    else:
-        CONF_PATH = config_dir / "openml_regression.json"
-
-    hp_search_space, fixed_hp = load_hp_tuning_conf(CONF_PATH)
-    fixed_hp["dataset_name"] = f"OpenML_{OPENML_DATASET_ID}_{TASK_TYPE}"
-    print(f"Loaded HP tuning config: {CONF_PATH}")
-    print(f"Dataset: {fixed_hp['dataset_name']}")
+    
+    if DATASET_TYPE == "openml":
+        if TASK_TYPE == "classification":
+            CONF_PATH = config_dir / "openml_classification.json"
+        else:
+            CONF_PATH = config_dir / "openml_regression.json"
+        
+        hp_search_space, fixed_hp = load_hp_tuning_conf(CONF_PATH)
+        fixed_hp["dataset_name"] = f"OpenML_{OPENML_DATASET_ID}_{TASK_TYPE}"
+        print(f"Loaded OpenML config: {CONF_PATH}")
+        print(f"Dataset: OpenML_{OPENML_DATASET_ID}_{TASK_TYPE}")
+    else:  # synthetic
+        if SYNTHETIC_TYPE == "linear":
+            CONF_PATH = config_dir / "correlated_linear.json"
+        else:  # nonlinear
+            CONF_PATH = config_dir / "correlated_nonlinear.json"
+        
+        hp_search_space, fixed_hp = load_hp_tuning_conf(CONF_PATH)
+        print(f"Loaded synthetic dataset config: {CONF_PATH}")
+        print(f"Dataset: {fixed_hp.get('dataset_name', f'Correlated_{SYNTHETIC_TYPE}')}")
+        print(f"Synthetic type: {SYNTHETIC_TYPE}")
+    
+    print(f"Task type: {'Regression' if fixed_hp.get('regression', False) else 'Classification'}")
 
     # ============================================================================
     # random search parameters + base_logdir
@@ -134,7 +178,12 @@ def main() -> int:
 
     results_dir = project_root / "results" / "hyperparameter_tuning" / "nam"
 
-    logdir_name = f"hp_tuning_openml_{OPENML_DATASET_ID}_{TASK_TYPE}"
+    if DATASET_TYPE == "openml":
+        logdir_name = f"hp_tuning_openml_{OPENML_DATASET_ID}_{TASK_TYPE}"
+    else:  # synthetic
+        dataset_name = fixed_hp.get('dataset_name', 'correlated_nonlinear').lower().replace(' ', '_')
+        logdir_name = f"hp_tuning_{dataset_name}"
+    
     if args.run_tag:
         logdir_name = f"{logdir_name}_{args.run_tag}"
 
@@ -201,16 +250,26 @@ def main() -> int:
 
         # Load fixed training parameters
         training_config_dir = project_root / "config" / "training"
-        if TASK_TYPE == "classification":
-            training_config_path = training_config_dir / "nam_training_parameters_openml_classification.json"
-        else:
-            training_config_path = training_config_dir / "nam_training_parameters_openml_regression.json"
+        if DATASET_TYPE == "openml":
+            if TASK_TYPE == "classification":
+                training_config_path = training_config_dir / "nam_training_parameters_openml_classification.json"
+            else:
+                training_config_path = training_config_dir / "nam_training_parameters_openml_regression.json"
+        else:  # synthetic
+            if SYNTHETIC_TYPE == "linear":
+                training_config_path = training_config_dir / "nam_training_parameters_correlated_linear.json"
+            else:  # nonlinear
+                training_config_path = training_config_dir / "nam_training_parameters_correlated_nonlinear.json"
 
         with open(training_config_path, "r") as f:
             fixed_training_params = json.load(f)
 
         training_results_dir = project_root / "results" / "training" / "nam"
-        training_logdir = training_results_dir / f"openml_{OPENML_DATASET_ID}_{TASK_TYPE}"
+        if DATASET_TYPE == "openml":
+            training_logdir = training_results_dir / f"openml_{OPENML_DATASET_ID}_{TASK_TYPE}"
+        else:  # synthetic
+            dataset_name_safe = fixed_hp.get('dataset_name', 'correlated_nonlinear').lower().replace(' ', '_')
+            training_logdir = training_results_dir / dataset_name_safe
         training_logdir.mkdir(parents=True, exist_ok=True)
         print(f"Training results will be saved to: {training_logdir}")
 
