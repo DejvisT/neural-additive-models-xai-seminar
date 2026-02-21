@@ -969,14 +969,15 @@ def gather_nam_predictions_and_hist_data(
   return all_preds_per_fold, all_hist_data, all_mean_pred
 
 
-def plot_rmse_boxplot_vs_rho(rmse_df, dataset_label="Linear"):
+def plot_rmse_boxplot_vs_rho(rmse_df, dataset_label="Linear", save_path=None):
     """
     Visualize the RMSE per rho using boxplots for the distributions across seeds.
     Works for both linear and nonlinear datasets.
-    
+
     Args:
         rmse_df (pd.DataFrame): DataFrame with columns "rho" and "rmse"
         dataset_label (str): Label used in the plot title (e.g., "Linear", "Nonlinear")
+        save_path (str or Path, optional): If set, save figure and close; else plt.show()
     """
     plt.figure(figsize=(8, 5))
     sns.boxplot(data=rmse_df, x="rho", y="rmse", palette="crest")
@@ -984,16 +985,21 @@ def plot_rmse_boxplot_vs_rho(rmse_df, dataset_label="Linear"):
     plt.ylabel("Test RMSE (across seeds)")
     plt.title(f"Test RMSE Distribution vs. Correlation ({dataset_label})")
     plt.tight_layout()
-    plt.show()
+    if save_path:
+        plt.savefig(save_path, bbox_inches="tight")
+        plt.close()
+    else:
+        plt.show()
 
 
-def analyze_shape_rmse(shape_df, dataset_label="Linear or Nonlinear"):
+def analyze_shape_rmse(shape_df, dataset_label="Linear or Nonlinear", save_dir=None):
     """
     Print summary statistics and visualize shape RMSE for NAMs analysis.
 
     Args:
         shape_df (pd.DataFrame): DataFrame containing columns ['rho', 'seed', 'feature', ..., 'rmse']
         dataset_label (str): Used in print statements and plot titles
+        save_dir (str or Path, optional): If set, save figures to this directory and close; else plt.show()
     """
     # Style
     sns.set_style("whitegrid")
@@ -1021,7 +1027,11 @@ def analyze_shape_rmse(shape_df, dataset_label="Linear or Nonlinear"):
     plt.xlabel("Correlation (rho)")
     plt.ylabel("Feature")
     plt.tight_layout()
-    plt.show()
+    if save_dir:
+        plt.savefig(Path(save_dir) / "shape_rmse_heatmap.png", bbox_inches="tight")
+        plt.close()
+    else:
+        plt.show()
 
     # Trend per feature across rhos, with std shaded
     plt.figure(figsize=(8, 5))
@@ -1040,15 +1050,19 @@ def analyze_shape_rmse(shape_df, dataset_label="Linear or Nonlinear"):
     plt.ylabel("Shape RMSE (mean ± std)")
     plt.title(f"Shape RMSE per Feature across Rhos\n{dataset_label}")
     plt.legend(
-        title="Feature", 
-        loc='center left', 
+        title="Feature",
+        loc='center left',
         bbox_to_anchor=(1.01, 0.5),
         ncol=1,
         borderaxespad=0.
     )
     plt.grid(alpha=0.3)
     plt.tight_layout()
-    plt.show()
+    if save_dir:
+        plt.savefig(Path(save_dir) / "shape_rmse_trend.png", bbox_inches="tight")
+        plt.close()
+    else:
+        plt.show()
 
     
 def compute_mean_predictions(data_x, column_names, unique_features, feature_predictions):
@@ -1101,6 +1115,7 @@ def plot_feature_importance_across_splits(
     all_mean_pred,
     dataset_name,
     figsize=(10, 6),
+    save_path=None,
 ):
   """Compute and plot feature importance aggregated across multiple splits with error bars.
   
@@ -1109,6 +1124,7 @@ def plot_feature_importance_across_splits(
     all_mean_pred: List of mean prediction dictionaries (one per split).
     dataset_name: Name of the dataset (for plot title).
     figsize: Figure size tuple (default: (10, 6)).
+    save_path: If set, save figure to this path and close; otherwise plt.show().
   
   Returns:
     sorted_features: Array of feature names sorted by mean importance.
@@ -1145,7 +1161,11 @@ def plot_feature_importance_across_splits(
   plt.ylabel("Mean Absolute Contribution")
   plt.title(f"Feature Importance Across Splits — {dataset_name}")
   plt.tight_layout()
-  plt.show()
+  if save_path:
+    plt.savefig(save_path, bbox_inches="tight")
+    plt.close()
+  else:
+    plt.show()
   
   return sorted_features, sorted_mean, sorted_std
 
@@ -1340,7 +1360,8 @@ def plot_nam_contributions_with_density(
     dataset_label="Feature Contribution",
     return_limits=False,
     x_limits=None,
-    y_limits=None
+    y_limits=None,
+    save_path=None,
 ):
     if colors is None:
         colors = [[0.9, 0.4, 0.5], [0.5, 0.9, 0.4], [0.4, 0.5, 0.9], [0.9, 0.5, 0.9]]
@@ -1411,7 +1432,11 @@ def plot_nam_contributions_with_density(
     )
 
     plt.subplots_adjust(hspace=0.25)
-    plt.show()
+    if save_path:
+        plt.savefig(save_path, bbox_inches="tight")
+        plt.close()
+    else:
+        plt.show()
 
     if return_limits:
         return fig, (ymin, ymax)
