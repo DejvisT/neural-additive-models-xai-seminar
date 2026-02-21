@@ -132,7 +132,7 @@ def main() -> int:
         data_y,
         num_folds=args.num_folds,
         is_regression=is_regression,
-        random_state=args.random_state,
+        random_state=42,
     )
 
     # Load best HP
@@ -153,7 +153,7 @@ def main() -> int:
         best_hp = json.load(f)
 
     fixed_hp = {
-        "random_state": args.random_state,
+        "random_state": 42,  # Hardcoded to match notebook exactly
         "n_jobs": -1,
         "early_stopping_rounds": 50,
         "validation_size": 0.125,
