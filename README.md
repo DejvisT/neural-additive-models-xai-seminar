@@ -104,8 +104,7 @@ neural-additive-models-xai-seminar/
 ├── requirements.txt              # Python dependencies
 ├── README.md
 ├── compas_run.txt               # PowerShell script for training COMPAS models
-├── housing_run.txt              # PowerShell script for training Housing models
-└── HOW_TO_RUN_TUNING_FOR_NEW_DATASET.md  # Guide for new datasets
+└── housing_run.txt              # PowerShell script for training Housing models
 ```
 
 ### Key Directories
