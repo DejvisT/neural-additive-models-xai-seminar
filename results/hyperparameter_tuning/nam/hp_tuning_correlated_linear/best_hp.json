@@ -1,7 +1,0 @@
-{
-  "dropout": 0.3,
-  "l2_regularization": 3.32647082621911e-05,
-  "learning_rate": 0.024808857993184677,
-  "feature_dropout": 0,
-  "output_regularization": 0.029940175102259513
-}
