@@ -5,12 +5,11 @@ os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"  # 0=all, 1=filter INFO, 2=filter WARNI
 
 import argparse
 import json
-import os
 import pickle
 import sys
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List
 
 import numpy as np
 import pandas as pd
@@ -101,8 +100,8 @@ def gather_gam_predictions(
     base_logdir: str | None,
 ):
     """
-    Like the notebook: one GAM per fold (no splits), cached as fold_k/gam_model.pkl.
-    Returns all_preds_per_fold in the expected shape: [fold][split][samples] with split=0 only.
+    Train or load one GAM per fold, cached as fold_k/gam_model.pkl.
+    Returns all_preds_per_fold shaped [fold][1][samples] (single model per fold).
     """
     all_preds_per_fold = [[] for _ in range(num_folds)]
 
@@ -158,7 +157,7 @@ def gather_gam_predictions(
 def main() -> int:
     args = parse_args()
 
-    # --- Notebook-like project_root + src path ---
+    # --- Project root + src path ---
     project_root = Path(__file__).resolve().parent.parent
     src_path = project_root / "src"
     if str(src_path) not in sys.path:
@@ -204,7 +203,6 @@ def main() -> int:
     print(f"Loading dataset: {dataset_name}")
     data_x, data_y, column_names = data_utils.load_dataset(dataset_name)
 
-    # Redundant but notebook did it: infer regression from name
     if "_regression" in dataset_name:
         is_regression = True
     elif "_classification" in dataset_name:

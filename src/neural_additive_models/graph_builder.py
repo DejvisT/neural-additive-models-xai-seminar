@@ -16,7 +16,7 @@
 """Build a deep GAM model graph."""
 
 import functools
-from typing import Union, List, Optional, Tuple, Callable, Dict
+from typing import Union, Callable, Dict
 import warnings
 import numpy as np
 from sklearn import metrics as sk_metrics

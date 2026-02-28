@@ -6,8 +6,6 @@ os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"  # 0=all, 1=filter INFO, 2=filter WARNI
 import argparse
 import sys
 from pathlib import Path
-from typing import Optional, Tuple
-
 import numpy as np
 
 # ---------------------------------------------------------------------------
@@ -133,7 +131,7 @@ def main() -> int:
         data_x, column_names, col_min_max, inverse_min_max_scaler
     )
 
-    # Keep it notebook-simple: identity mappings
+    # Identity mappings (no special label formatting for OpenML features)
     COL_NAMES = {dataset_name: {name: name for name in column_names}}
     FEATURE_LABEL_MAPPING = {dataset_name: {name: name for name in column_names}}
     CATEGORICAL_NAMES = []

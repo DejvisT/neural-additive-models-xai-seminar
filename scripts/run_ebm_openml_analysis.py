@@ -4,7 +4,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Tuple
 
 import numpy as np
 
@@ -153,7 +153,7 @@ def main() -> int:
         best_hp = json.load(f)
 
     fixed_hp = {
-        "random_state": 42,  # Hardcoded to match notebook exactly
+        "random_state": 42,
         "n_jobs": -1,
         "early_stopping_rounds": 50,
         "validation_size": 0.125,

@@ -17,8 +17,7 @@
 
 import gzip
 import os.path as osp
-import tarfile
-from typing import Tuple, Dict, Union, Iterator, List
+from typing import Tuple
 
 import numpy as np
 import pandas as pd
@@ -35,7 +34,6 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import OneHotEncoder
 import tensorflow.compat.v1 as tf
 from sklearn.datasets import fetch_california_housing
-from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OrdinalEncoder
 from sklearn.datasets import fetch_openml

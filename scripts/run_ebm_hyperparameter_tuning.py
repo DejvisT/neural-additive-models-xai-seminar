@@ -1,22 +1,3 @@
-"""
-run_ebm_hyperparameter_tuning.py
-
-Script equivalent of ebm_hyperparameter_tuning.ipynb, kept similar for correctness checks.
-
-Notebook mapping:
-  Cell 1: imports + project_root + src path + data_utils
-  Cell 3: dataset config + hp_search_space + fixed_hp + tuning params + results_dir
-  Cell 5: load dataset + determine regression + train/val/test split
-  Cell 7: sample_hyperparameters + generate configs
-  Cell 9: train_and_evaluate_ebm + tuning loop
-  Cell 10: select best + save best_hp + save all results + summary stats
-
-Adds:
-  - CLI args for dataset_id and task_type
-  - Plot saving (tuning curve + training time curve)
-  - Optional run_tag to avoid overwriting existing files
-"""
-
 from __future__ import annotations
 
 import argparse
@@ -107,7 +88,6 @@ def get_hp_search_space() -> Dict[str, Any]:
 
 
 def get_fixed_hp(random_state: int) -> Dict[str, Any]:
-    # same as notebook but allow random_state via CLI
     return {
         "random_state": random_state,
         "n_jobs": -1,
@@ -151,7 +131,6 @@ def train_and_evaluate_ebm(
     fixed_hp: Dict[str, Any],
     is_regression: bool,
 ) -> Tuple[float, float]:
-    # Import here to keep startup fast / similar to notebook
     from interpret.glassbox import ExplainableBoostingClassifier, ExplainableBoostingRegressor
 
     if is_regression:
@@ -174,7 +153,7 @@ def train_and_evaluate_ebm(
 
 
 # ---------------------------------------------------------------------------
-# Plotting helpers (added)
+# Plotting helpers
 # ---------------------------------------------------------------------------
 
 def save_tuning_plots(df_success: pd.DataFrame, out_dir: Path, dataset_name: str, is_regression: bool) -> None:
@@ -364,7 +343,7 @@ def main() -> int:
         json.dump(trial_results, f, indent=2)
     print(f"Saved all results to: {results_file}")
 
-    # Summary stats (same spirit as notebook)
+    # Summary stats
     print("\n" + "=" * 70)
     print("SUMMARY STATISTICS")
     print("=" * 70)
@@ -373,7 +352,7 @@ def main() -> int:
     print(f"Std {metric_name}: {df_success['validation_score'].std():.4f}")
     print(f"Mean training time: {df_success['training_time'].mean():.1f}s")
 
-    # Added: plots
+    # Save tuning plots
     try:
         save_tuning_plots(df_success, results_dir, safe_name + tag, is_regression=is_regression)
         print(f"Saved plots to: {results_dir}")

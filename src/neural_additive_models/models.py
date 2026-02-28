@@ -15,7 +15,7 @@
 
 """Neural net models for tabular datasets."""
 
-from typing import List, Optional, Union
+from typing import Union
 import numpy as np
 import tensorflow as tf
 

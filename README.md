@@ -5,6 +5,10 @@
 ### Prerequisites
 - Python 3.9.13 (64-bit)
 
+### 0. Download the repository
+
+> **Recommended:** Download this repository as a **ZIP file** from GitHub (Code -> Download ZIP) instead of cloning it with `git clone`. The git history is very large because experiment results were previously tracked, and cloning would download the full history.
+
 ### 1. Install requirements
 
 Install all required dependencies:

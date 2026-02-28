@@ -19,7 +19,6 @@ r"""Training script for Neural Additive Models.
 
 import operator
 import os
-from typing import Tuple, Iterator, List, Dict
 from absl import app
 from absl import flags
 import numpy as np
@@ -29,7 +28,6 @@ from neural_additive_models import data_utils
 from neural_additive_models import graph_builder
 
 gfile = tf.io.gfile
-DatasetType = data_utils.DatasetType
 
 FLAGS = flags.FLAGS
 

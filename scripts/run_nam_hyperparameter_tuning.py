@@ -5,9 +5,8 @@ import json
 import os
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
-import pandas as pd
 
 
 # ---------------------------------------------------------------------------
@@ -37,7 +36,7 @@ def ensure_src_on_path(project_root: Path) -> None:
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(
-        description="NAM hyperparameter tuning for OpenML or synthetic datasets (correlated linear/nonlinear), notebook-equivalent.",
+        description="NAM hyperparameter tuning for OpenML or synthetic datasets (correlated linear/nonlinear).",
     )
     p.add_argument(
         "--dataset_type",
@@ -81,11 +80,10 @@ def parse_args() -> argparse.Namespace:
         help="Optional suffix appended to the tuning logdir name (prevents overwriting).",
     )
 
-    # Optional training stage (cells 8-11)
     p.add_argument(
         "--train_after_tuning",
         action="store_true",
-        help="After selecting best_hp.json, run training across folds/splits (like the notebook).",
+        help="After selecting best_hp.json, run training across folds/splits.",
     )
     p.add_argument("--num_folds", type=int, default=5, help="Num folds for training stage (default: 5).")
     p.add_argument(
