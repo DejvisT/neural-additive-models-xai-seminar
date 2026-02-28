@@ -13,6 +13,27 @@ Install all required dependencies:
 pip install -r requirements.txt
 ```
 
+### 2. Download experiment results
+
+The `results/` directory (containing trained models, hyperparameter tuning outputs, and evaluation metrics) is not included in this repository due to its size. You must download it separately:
+
+1. Go to: [https://syncandshare.lrz.de/getlink/fiLe5gfQcjUEgGq1Eo8YAb/](https://syncandshare.lrz.de/getlink/fiLe5gfQcjUEgGq1Eo8YAb/)
+2. Enter the password: `research_seminar`
+3. Download the three folders inside the **Neural Additive Models** directory:
+   - `evaluation`
+   - `hyperparameter_tuning`
+   - `training`
+4. Unzip them and place them under the `results/` directory so the structure looks like:
+
+```
+results/
+├── evaluation/
+├── hyperparameter_tuning/
+└── training/
+```
+
+> **Note:** Without these files, evaluation notebooks and analysis scripts will not be able to load pre-trained models or previously computed metrics. You can still run hyperparameter tuning and training from scratch.
+
 ## Repository Structure
 
 ```
