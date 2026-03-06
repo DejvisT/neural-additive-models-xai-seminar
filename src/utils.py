@@ -110,7 +110,7 @@ def load_nam_checkpoint(ckpt_dir: str, hyperparameters=None):
         print(f"Auto-detected shallow={shallow_value} from checkpoint structure")
     else:
         if shallow_value != detected_shallow:
-            print(f"⚠️  WARNING: Provided shallow={shallow_value} but checkpoint suggests shallow={detected_shallow}")
+            print(f"WARNING: Provided shallow={shallow_value} but checkpoint suggests shallow={detected_shallow}")
             print(f"   Using provided value: shallow={shallow_value}")
     
     nam = NAM(
@@ -129,7 +129,7 @@ def load_nam_checkpoint(ckpt_dir: str, hyperparameters=None):
     sess = tf.Session()
     saver = tf.train.Saver()
     saver.restore(sess, ckpt_path)
-    print("✅ Restored NAM from checkpoint.")
+    print("Restored NAM from checkpoint.")
 
     return nam, sess
 

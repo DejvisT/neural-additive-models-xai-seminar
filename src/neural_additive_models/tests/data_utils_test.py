@@ -19,7 +19,7 @@ from absl.testing import absltest
 from absl.testing import parameterized
 
 import numpy as np
-from neural_additive_models import data_utils
+from .. import data_utils
 
 
 class LoadDataTest(parameterized.TestCase):

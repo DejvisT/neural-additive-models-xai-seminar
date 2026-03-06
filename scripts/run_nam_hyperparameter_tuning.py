@@ -326,9 +326,9 @@ def main() -> int:
                 )
 
                 if result.returncode == 0:
-                    print("  ✅ Completed successfully")
+                    print("  Completed successfully")
                 else:
-                    print(f"  ❌ Failed (return code: {result.returncode})")
+                    print(f"  FAILED (return code: {result.returncode})")
                     if result.stderr:
                         err = result.stderr.strip()
                         print(f"  Error (tail): ...{err[-500:]}" if len(err) > 500 else f"  Error: {err}")

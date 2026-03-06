@@ -2,6 +2,7 @@ import json
 import os
 import random
 import subprocess
+import sys
 import time
 import shlex
 from pathlib import Path
@@ -76,7 +77,7 @@ def generate_training_command(fixed_hp, hyperparameters, trial_num, data_split, 
     all_hp = {**fixed_hp, **hyperparameters}
     all_hp['logdir'] = logdir
 
-    cmd = ['python', '-m', 'neural_additive_models.nam_train']
+    cmd = [sys.executable, '-m', 'neural_additive_models.nam_train']
 
     for key, value in all_hp.items():
         if key == 'data_split':

@@ -1,3 +1,4 @@
+$env:PYTHONPATH = "src"
 for ($s = 1; $s -le 20; $s++) {
     python -m neural_additive_models.nam_train `
         --training_epochs=1000 `

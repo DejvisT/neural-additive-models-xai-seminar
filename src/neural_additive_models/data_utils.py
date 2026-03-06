@@ -16,6 +16,7 @@
 """Data readers for regression/ binary classification datasets."""
 
 import gzip
+import os
 import os.path as osp
 from typing import Tuple
 
@@ -40,6 +41,9 @@ from sklearn.datasets import fetch_openml
 import openml
 
 gfile = tf.gfile
+
+_MODULE_DIR = os.path.dirname(os.path.abspath(__file__))
+_PROJECT_ROOT = os.path.dirname(os.path.dirname(_MODULE_DIR))
 
 DATA_PATH = 'gs://nam_datasets/data'
 DatasetType = Tuple[np.ndarray, np.ndarray]
@@ -287,7 +291,7 @@ def load_recidivism_data():
   and applies the official preprocessing used in fairness papers.
   """
 
-  df = pd.read_csv('compas-scores-two-years.csv')
+  df = pd.read_csv(os.path.join(_PROJECT_ROOT, 'data', 'compas-scores-two-years.csv'))
 
   # 1. Apply official ProPublica filters
 

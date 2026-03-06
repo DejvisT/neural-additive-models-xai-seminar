@@ -20,7 +20,7 @@ from absl.testing import parameterized
 
 import numpy as np
 import tensorflow.compat.v1 as tf
-from neural_additive_models import models
+from .. import models
 
 
 class LoadModelsTest(parameterized.TestCase):

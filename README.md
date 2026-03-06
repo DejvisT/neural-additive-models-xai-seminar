@@ -3,13 +3,23 @@
 ## Installation Steps
 
 ### Prerequisites
-- Python 3.9.13 (64-bit)
+- **Python 3.9** (64-bit) — **required**. TensorFlow 2.10.1 does not support Python 3.10+. Verify with `python --version`.
 
 ### 0. Download the repository
 
 > **Recommended:** Download this repository as a **ZIP file** from GitHub (Code -> Download ZIP) instead of cloning it with `git clone`. The git history is very large because experiment results were previously tracked, and cloning would download the full history.
 
 ### 1. Install requirements
+
+**Optional but recommended:** Create and activate a virtual environment so dependencies don't affect your system Python:
+
+```bash
+python -m venv .venv
+# Windows (PowerShell):
+.\.venv\Scripts\Activate.ps1
+# Windows (cmd) or Linux/macOS:
+# .venv\Scripts\activate  (Windows cmd) or source .venv/bin/activate (Linux/macOS)
+```
 
 Install all required dependencies:
 
@@ -37,6 +47,10 @@ results/
 ```
 
 > **Note:** Without these files, evaluation notebooks and analysis scripts will not be able to load pre-trained models or previously computed metrics. You can still run hyperparameter tuning and training from scratch.
+
+- **Working directory:** Run all commands from the **repository root** (the folder that contains `src/`, `scripts/`, and `requirements.txt`).
+- **Windows (PowerShell):** The multi-line bash examples below use backslash (`\`) for line continuation, which PowerShell does not support. Either run each command as a **single line** (join the lines and remove the `\`), or use **Git Bash** / **WSL** to run the bash blocks as-is. The PowerShell blocks (COMPAS/Housing) work directly in PowerShell.
+- **COMPAS/Housing training:** The scripts `compas_run.txt` and `housing_run.txt` set `PYTHONPATH=src` automatically so that `python -m neural_additive_models.nam_train` works from the repo root.
 
 ## Repository Structure
 
@@ -120,7 +134,7 @@ neural-additive-models-xai-seminar/
 
 ### Training Models for COMPAS and Housing Datasets
 
-For the COMPAS (Recidivism) and Housing datasets, use the provided PowerShell scripts to train NAM models across multiple data splits.
+For the COMPAS (Recidivism) and Housing datasets, use the provided PowerShell scripts to train NAM models across multiple data splits. COMPAS training requires `data/compas-scores-two-years.csv` (included in the repository). Housing uses the California housing dataset loaded from sklearn.
 
 #### Training COMPAS Models
 
@@ -133,6 +147,7 @@ Run the COMPAS training script (trains models for 20 data splits):
 Or execute directly in PowerShell:
 
 ```powershell
+$env:PYTHONPATH = "src"
 for ($s = 1; $s -le 20; $s++) {
     python -m neural_additive_models.nam_train `
         --training_epochs=1000 `
@@ -220,7 +235,7 @@ python scripts/run_nam_hyperparameter_tuning.py \
 - `--run_tag`: Optional suffix for output directory to avoid overwriting
 - `--skip_if_exists`: Skip trials if results already exist
 - `--per_split_timeout_s`: Optional timeout per split in seconds
-- `--do_training`: After tuning, train models using best hyperparameters
+- `--train_after_tuning`: After tuning, train models using best hyperparameters
 
 **Output:** Best hyperparameters are saved to `results/hyperparameter_tuning/nam/hp_tuning_*/best_hp.json`
 
@@ -310,7 +325,7 @@ python scripts/run_ebm_openml_analysis.py \
     --num_folds 5 \
     --num_splits 20 \
     --random_state 42 \
-    --save_plots
+    --save_plots 
 ```
 
 **Additional Options:**
@@ -320,14 +335,13 @@ python scripts/run_ebm_openml_analysis.py \
 - `--save_plots`: Save plots to `results/evaluation/plots/`
 - `--y_limits`: Optional y-axis limits for EBM shape plot
 - `--overwrite`: Overwrite plots if they exist
-- `--force_retrain`: Force retraining of all models (clears model cache)
 - `--print_every`: Print progress every N splits (default: 5)
 
 **Output:**
 - Performance metrics: `results/evaluation/ebm_OpenML_<id>_<task_type>_performance.json`
 - Plots: `results/evaluation/plots/ebm_OpenML_<id>_<task_type>/`
 
-**Note:** If you get different results than expected, use `--force_retrain` to clear cached models that may have been trained with different hyperparameters.
+**Note:** If you get different results than expected, existing cached EBM models may have been trained with different hyperparameters; delete the relevant folder under `results/training/ebm/` and re-run to retrain.
 
 ### Scripts vs Notebooks
 
